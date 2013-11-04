@@ -4,69 +4,110 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public class ClassSchemaBuilder {
+class ClassSchemaBuilder {
 
     static final Map<Integer, ClassInfo> classInfoCache = new HashMap<>();
     static ClassInfo stringClassInfo;
-    static final Map<Class, SerializationUtils.Serializable> typeRegistry = new HashMap<>(32);
+    static final Map<Class, SerializationUtils.Serializer> serializers = new HashMap<>(32);
+    static final Map<Class, SerializationUtils.Deserializer> deserializers = new HashMap<>(32);
 
     public void build() {
-        typeRegistry.put(int.class, new SerializationUtils.IntSerializer());
-        typeRegistry.put(int[].class, new SerializationUtils.IntArraySerializer());
-        typeRegistry.put(Integer.class, new SerializationUtils.IntegerSerializer());
-
-        typeRegistry.put(long.class, new SerializationUtils.LongSerializer());
-        typeRegistry.put(long[].class, new SerializationUtils.LongArraySerializer());
-        typeRegistry.put(Long.class, new SerializationUtils.LongWrapperSerializer());
-
-        typeRegistry.put(short.class, new SerializationUtils.ShortSerializer());
-        typeRegistry.put(short[].class, new SerializationUtils.ShortArraySerializer());
-        typeRegistry.put(Short.class, new SerializationUtils.ShortWrapperSerializer());
-
-        typeRegistry.put(byte.class, new SerializationUtils.ByteSerializer());
-        typeRegistry.put(byte[].class, new SerializationUtils.ByteArraySerializer());
-        typeRegistry.put(Byte.class, new SerializationUtils.ByteWrapperSerializer());
-
-        typeRegistry.put(char.class, new SerializationUtils.CharSerializer());
-        typeRegistry.put(char[].class, new SerializationUtils.CharArraySerializer());
-        typeRegistry.put(Character.class, new SerializationUtils.CharacterSerializer());
-
-        typeRegistry.put(boolean.class, new SerializationUtils.BooleanSerializer());
-        typeRegistry.put(boolean[].class, new SerializationUtils.BooleanArraySerializer());
-        typeRegistry.put(Boolean.class, new SerializationUtils.BooleanWrapperSerializer());
-
-        typeRegistry.put(float.class, new SerializationUtils.FloatSerializer());
-        typeRegistry.put(float[].class, new SerializationUtils.FloatArraySerializer());
-        typeRegistry.put(Float.class, new SerializationUtils.FloatWrapperSerializer());
-
-        typeRegistry.put(double.class, new SerializationUtils.DoubleSerializer());
-        typeRegistry.put(double[].class, new SerializationUtils.DoubleArraySerializer());
-        typeRegistry.put(Double.class, new SerializationUtils.DoubleWrapperSerializer());
-
-        typeRegistry.put(String.class, new SerializationUtils.StringSerializer());
-        typeRegistry.put(String[].class, new SerializationUtils.StringArraySerializer());
-
-        typeRegistry.put(Object[].class, new SerializationUtils.ObjectArraySerializer());
-
+        buildSerializers();
+        buildDerserializers();
 
         stringClassInfo = registerClass(String.class);
 
-        registerClass(ArrayList.class, true);
+    }
 
+    private void buildSerializers() {
+        serializers.put(int.class, new SerializationUtils.IntSerializer());
+        serializers.put(int[].class, new SerializationUtils.IntArraySerializer());
+        serializers.put(Integer.class, new SerializationUtils.IntegerSerializer());
+
+        serializers.put(long.class, new SerializationUtils.LongSerializer());
+        serializers.put(long[].class, new SerializationUtils.LongArraySerializer());
+        serializers.put(Long.class, new SerializationUtils.LongWrapperSerializer());
+
+        serializers.put(short.class, new SerializationUtils.ShortSerializer());
+        serializers.put(short[].class, new SerializationUtils.ShortArraySerializer());
+        serializers.put(Short.class, new SerializationUtils.ShortWrapperSerializer());
+
+        serializers.put(byte.class, new SerializationUtils.ByteSerializer());
+        serializers.put(byte[].class, new SerializationUtils.ByteArraySerializer());
+        serializers.put(Byte.class, new SerializationUtils.ByteWrapperSerializer());
+
+        serializers.put(char.class, new SerializationUtils.CharSerializer());
+        serializers.put(char[].class, new SerializationUtils.CharArraySerializer());
+        serializers.put(Character.class, new SerializationUtils.CharacterSerializer());
+
+        serializers.put(boolean.class, new SerializationUtils.BooleanSerializer());
+        serializers.put(boolean[].class, new SerializationUtils.BooleanArraySerializer());
+        serializers.put(Boolean.class, new SerializationUtils.BooleanWrapperSerializer());
+
+        serializers.put(float.class, new SerializationUtils.FloatSerializer());
+        serializers.put(float[].class, new SerializationUtils.FloatArraySerializer());
+        serializers.put(Float.class, new SerializationUtils.FloatWrapperSerializer());
+
+        serializers.put(double.class, new SerializationUtils.DoubleSerializer());
+        serializers.put(double[].class, new SerializationUtils.DoubleArraySerializer());
+        serializers.put(Double.class, new SerializationUtils.DoubleWrapperSerializer());
+
+        serializers.put(String.class, new SerializationUtils.StringSerializer());
+        serializers.put(String[].class, new SerializationUtils.StringArraySerializer());
+    }
+
+    private void buildDerserializers() {
+        deserializers.put(int.class, new SerializationUtils.IntDeserializer());
+        deserializers.put(int[].class, new SerializationUtils.IntArrayDeserializer());
+        deserializers.put(Integer.class, new SerializationUtils.IntegerDeserializer());
+
+        deserializers.put(long.class, new SerializationUtils.LongDeserializer());
+        deserializers.put(long[].class, new SerializationUtils.LongArrayDeserializer());
+        deserializers.put(Long.class, new SerializationUtils.LongWrapperDeserializer());
+
+        deserializers.put(short.class, new SerializationUtils.ShortDeserializer());
+        deserializers.put(short[].class, new SerializationUtils.ShortArrayDeserializer());
+        deserializers.put(Short.class, new SerializationUtils.ShortWrapperDeserializer());
+
+        deserializers.put(byte.class, new SerializationUtils.ByteDeserializer());
+        deserializers.put(byte[].class, new SerializationUtils.ByteArrayDeserializer());
+        deserializers.put(Byte.class, new SerializationUtils.ByteWrapperDeserializer());
+
+        deserializers.put(char.class, new SerializationUtils.CharDeserializer());
+        deserializers.put(char[].class, new SerializationUtils.CharArrayDeserializer());
+        deserializers.put(Character.class, new SerializationUtils.CharacterDeserializer());
+
+        deserializers.put(boolean.class, new SerializationUtils.BooleanDeserializer());
+        deserializers.put(boolean[].class, new SerializationUtils.BooleanArrayDeserializer());
+        deserializers.put(Boolean.class, new SerializationUtils.BooleanWrapperDeserializer());
+
+        deserializers.put(float.class, new SerializationUtils.FloatDeserializer());
+        deserializers.put(float[].class, new SerializationUtils.FloatArrayDeserializer());
+        deserializers.put(Float.class, new SerializationUtils.FloatWrapperDeserializer());
+
+        deserializers.put(double.class, new SerializationUtils.DoubleDeserializer());
+        deserializers.put(double[].class, new SerializationUtils.DoubleArrayDeserializer());
+        deserializers.put(Double.class, new SerializationUtils.DoubleWrapperDeserializer());
+
+        deserializers.put(String.class, new SerializationUtils.StringDeserializer());
+        deserializers.put(String[].class, new SerializationUtils.StringArrayDeserializer());
     }
 
     ClassInfo registerClass(Class c) {
-        return registerClass(c, false);
-    }
-
-    ClassInfo registerClass(Class c, boolean includingTransientFields) {
         ClassInfo classInfo = classInfoCache.get(c);
         if (classInfo == null) {
             int code = c.hashCode();
-            List<Field> fields = getFieldsFor(c, includingTransientFields);
+            List<Field> fields = getFieldsFor(c);
             FieldInfo[] fieldInfos = new FieldInfo[fields.size()];
             for (int i = 0; i < fields.size(); i++) {
-                FieldInfo fieldInfo = new FieldInfo(typeRegistry.get(fields.get(i).getType()), SerializationUtils.unsafe.objectFieldOffset(fields.get(i)));
+                FieldInfo fieldInfo;
+                Field field = fields.get(i);
+                long offset = SerializationUtils.unsafe.objectFieldOffset(field);
+                if (serializers.containsKey(field.getType()) && deserializers.containsKey(field.getType())) {
+                    fieldInfo = new FieldInfo(serializers.get(field.getType()), deserializers.get(field.getType()), offset);
+                } else  {
+                    throw new UnknownRegisteredTypeException(field.getName());
+                }
                 fieldInfos[i] = fieldInfo;
             }
             sortFieldInfo(fieldInfos);
@@ -90,12 +131,11 @@ public class ClassSchemaBuilder {
         });
     }
 
-    private List<Field> getFieldsFor(Class c, boolean includingTransientFields) {
+    private List<Field> getFieldsFor(Class c) {
         List<Field> fields = new ArrayList<>();
         Field[] ffs = c.getDeclaredFields();
         for (Field f : ffs) {
-            if ((f.getModifiers() & Modifier.STATIC) == 0 &&
-                    (includingTransientFields || (f.getModifiers() & Modifier.TRANSIENT) == 0)) {
+            if ((f.getModifiers() & Modifier.STATIC) == 0 && (f.getModifiers() & Modifier.TRANSIENT) == 0) {
                 fields.add(f);
             }
         }
@@ -106,13 +146,16 @@ public class ClassSchemaBuilder {
      *
      */
     static class FieldInfo {
-        final SerializationUtils.Serializable fieldSerializer;
+        final SerializationUtils.Serializer fieldSerializer;
+        final SerializationUtils.Deserializer fieldDeserializer;
         final long offset;
 
-        FieldInfo(SerializationUtils.Serializable fieldSerializer, long offset) {
+        FieldInfo(SerializationUtils.Serializer fieldSerializer, SerializationUtils.Deserializer fieldDeserializer, long offset) {
             this.fieldSerializer = fieldSerializer;
+            this.fieldDeserializer = fieldDeserializer;
             this.offset = offset;
         }
+
     }
 
     /**

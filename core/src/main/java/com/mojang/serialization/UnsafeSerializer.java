@@ -4,7 +4,7 @@ import static com.mojang.serialization.SerializationUtils.*;
 import static com.mojang.serialization.ClassSchemaBuilder.*;
 
 @SuppressWarnings("all")
-public class UnsafeSerializer {
+class UnsafeSerializer {
 
     private final UnsafeMemory unsafeMemory = new UnsafeMemory(new byte[1024]);
     private final ClassSchemaBuilder classSchemaBuilder = new ClassSchemaBuilder();
@@ -41,7 +41,7 @@ public class UnsafeSerializer {
             Object obj = unsafe.allocateInstance(classInfo.clazz);
 
             for (FieldInfo f : classInfo.fieldInfos) {
-                f.fieldSerializer.deserialize(unsafeMemory, obj, f.offset);
+                f.fieldDeserializer.deserialize(unsafeMemory, obj, f.offset);
             }
 
             return obj;
@@ -63,6 +63,8 @@ public class UnsafeSerializer {
         private static final long longArrayOffset = unsafe.arrayBaseOffset(long[].class);
         private static final long doubleArrayOffset = unsafe.arrayBaseOffset(double[].class);
         private static final long booleanArrayOffset = unsafe.arrayBaseOffset(boolean[].class);
+
+        private static final long objectArrayOffset = unsafe.arrayBaseOffset(Object[].class);
 
         private static final int SIZE_OF_LONG = 8;
         private static final int SIZE_OF_DOUBLE = 8;
@@ -196,7 +198,7 @@ public class UnsafeSerializer {
         public String readString() {
             String object = new String();
             for (FieldInfo fi : stringClassInfo.fieldInfos) {
-                fi.fieldSerializer.deserialize(this, object, fi.offset);
+                fi.fieldDeserializer.deserialize(this, object, fi.offset);
             }
             return object;
         }
@@ -366,6 +368,13 @@ public class UnsafeSerializer {
             }
         }
 
+        public void writeObjectArray(final Object[] values) {
+            int indexScale = unsafe.arrayIndexScale(Object[].class);
+            ensureCapacity(SIZE_OF_INT);
+            writeInt(values.length);
+            writeAnArray(values.length << indexScale, objectArrayOffset, values);
+        }
+
         public char[] readCharArray() {
             char[] values = new char[readInt()];
             readAnArray(values.length << 1, charArrayOffset, values);
@@ -419,6 +428,13 @@ public class UnsafeSerializer {
             for (int i = 0; i < values.length; i++) {
                 values[i] = readString();
             }
+            return values;
+        }
+
+        public Object[] readObjectArray() {
+            int indexScale = unsafe.arrayIndexScale(Object[].class);
+            Object[] values = new Object[readInt()];
+            readAnArray(values.length << indexScale, objectArrayOffset, values);
             return values;
         }
 
