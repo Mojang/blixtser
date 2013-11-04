@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class SerializerPerformanceTest {
 
-    Serializer[] serializers = new Serializer[]{new MoriatimSerializer(), new FastSerializer()};
+    Serializer[] serializers = new Serializer[]{new MojangSerializer(), new FastSerializer()};
     static SampleValue[] input = null;
 
     public void setUp() {
         ArrayList<SampleValue> inputList = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 220000; i++) {
             inputList.add(SampleValue.createRandom());
         }
         input = inputList.toArray(new SampleValue[inputList.size()]);

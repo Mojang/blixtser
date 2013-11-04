@@ -2,11 +2,11 @@ package serialization;
 
 import com.mojang.serialization.UnsafeSerializer;
 
-public class MoriatimSerializer implements Serializer{
+public class MojangSerializer implements Serializer {
 
     UnsafeSerializer unsafeSerializer = new UnsafeSerializer();
 
-    public MoriatimSerializer() {
+    public MojangSerializer() {
         unsafeSerializer.register(SampleValue.class);
     }
 
