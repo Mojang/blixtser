@@ -4,3 +4,8 @@ dependencies {
     compile 'com.googlecode:kryo:1.04'
     compile 'de.ruedigermoeller:fst:1.28'
 }
+
+task runO(dependsOn: classes, type: JavaExec) {
+    main = 'serialization.SerializerPerformanceTest';
+    classpath = sourceSets.main.runtimeClasspath;
+}
