@@ -1,0 +1,43 @@
+apply plugin: 'idea'
+apply plugin: 'java'
+
+subprojects {
+    apply plugin: 'idea'
+    apply plugin: 'java'
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from 'build/docs/javadoc'
+    }
+
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allSource
+        classifier = 'sources'
+    }
+
+    artifacts {
+        archives javadocJar
+        archives sourcesJar
+    }
+
+}
+
+allprojects {
+    group = 'com.mojang.moriatim'
+    version = '1.0.0'
+
+    targetCompatibility = 1.7
+    sourceCompatibility = 1.7
+
+    dependencies {
+        testCompile 'junit:junit:4.10'
+    }
+
+    repositories {
+        maven {
+            url 'http://repo.dev.mojang:80/content/groups/public/'
+        }
+    }
+
+}
+

@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':core')
+
+    compile 'com.googlecode:kryo:1.04'
+    compile 'de.ruedigermoeller:fst:1.28'
+}
