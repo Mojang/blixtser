@@ -13,7 +13,9 @@ public class SampleValue implements Serializable {
     String aString;
     int aInt;
     Long aWrappedLong;
+/*
     String[] strings;
+*/
 
     private final static Random rnd = new Random();
 
@@ -25,10 +27,12 @@ public class SampleValue implements Serializable {
         val.aString = UUID.randomUUID().toString();
         val.aInt = rnd.nextInt();
         val.aWrappedLong = rnd.nextLong();
-        val.strings = new String[rnd.nextInt(2)];
+/*
+        val.strings = new String[2];
         for (int i=0; i<val.strings.length; i++) {
             val.strings[i] = UUID.randomUUID().toString();
         }
+*/
         return val;
     }
 
@@ -50,6 +54,7 @@ public class SampleValue implements Serializable {
         if (!Objects.equals(this.aWrappedLong, other.aWrappedLong)) {
             return false;
         }
+/*
         if (this.strings.length != other.strings.length) {
             return false;
         }
@@ -58,6 +63,7 @@ public class SampleValue implements Serializable {
                 return false;
             }
         }
+*/
         return true;
     }
 

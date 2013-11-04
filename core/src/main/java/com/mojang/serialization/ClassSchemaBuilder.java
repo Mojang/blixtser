@@ -13,10 +13,12 @@ class ClassSchemaBuilder {
 
     public void build() {
         buildSerializers();
-        buildDerserializers();
+        buildDeserializers();
 
-        stringClassInfo = registerClass(String.class);
+        Set<String> ignoreFields = new HashSet<>();
+        ignoreFields.add("hash");
 
+        stringClassInfo = createClassInfo(String.class, ignoreFields);
     }
 
     private void buildSerializers() {
@@ -56,7 +58,7 @@ class ClassSchemaBuilder {
         serializers.put(String[].class, new SerializationUtils.StringArraySerializer());
     }
 
-    private void buildDerserializers() {
+    private void buildDeserializers() {
         deserializers.put(int.class, new SerializationUtils.IntDeserializer());
         deserializers.put(int[].class, new SerializationUtils.IntArrayDeserializer());
         deserializers.put(Integer.class, new SerializationUtils.IntegerDeserializer());
@@ -93,11 +95,19 @@ class ClassSchemaBuilder {
         deserializers.put(String[].class, new SerializationUtils.StringArrayDeserializer());
     }
 
-    ClassInfo registerClass(Class c) {
+    void registerClass(Class c, Set<String> ignoreFields) {
         ClassInfo classInfo = classInfoCache.get(c);
         if (classInfo == null) {
+            classInfo = createClassInfo(c, ignoreFields);
             int code = c.hashCode();
-            List<Field> fields = getFieldsFor(c);
+            classInfoCache.put(code, classInfo);
+        }
+    }
+
+    private ClassInfo createClassInfo(Class c, Set<String> ignoreFields) {
+        ClassInfo classInfo = classInfoCache.get(c);
+        if (classInfo == null) {
+            List<Field> fields = getFieldsFor(c, ignoreFields);
             FieldInfo[] fieldInfos = new FieldInfo[fields.size()];
             for (int i = 0; i < fields.size(); i++) {
                 FieldInfo fieldInfo;
@@ -112,14 +122,8 @@ class ClassSchemaBuilder {
             }
             sortFieldInfo(fieldInfos);
             classInfo = new ClassInfo(c, fieldInfos);
-            classInfoCache.put(code, classInfo);
         }
         return classInfo;
-    }
-
-    public static void main(String[] args) {
-        ClassSchemaBuilder csb = new ClassSchemaBuilder();
-        csb.build();
     }
 
     private void sortFieldInfo(FieldInfo[] infos) {
@@ -131,10 +135,13 @@ class ClassSchemaBuilder {
         });
     }
 
-    private List<Field> getFieldsFor(Class c) {
+    private List<Field> getFieldsFor(Class c, Set<String> ignoreFields) {
         List<Field> fields = new ArrayList<>();
         Field[] ffs = c.getDeclaredFields();
         for (Field f : ffs) {
+            if (ignoreFields.contains(f.getName())) {
+                continue;
+            }
             if ((f.getModifiers() & Modifier.STATIC) == 0 && (f.getModifiers() & Modifier.TRANSIENT) == 0) {
                 fields.add(f);
             }

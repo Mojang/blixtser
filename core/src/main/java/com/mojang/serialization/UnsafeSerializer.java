@@ -1,10 +1,12 @@
 package com.mojang.serialization;
 
+import java.util.HashSet;
+
 import static com.mojang.serialization.SerializationUtils.*;
 import static com.mojang.serialization.ClassSchemaBuilder.*;
 
 @SuppressWarnings("all")
-class UnsafeSerializer {
+public class UnsafeSerializer {
 
     private final UnsafeMemory unsafeMemory = new UnsafeMemory(new byte[1024]);
     private final ClassSchemaBuilder classSchemaBuilder = new ClassSchemaBuilder();
@@ -15,7 +17,7 @@ class UnsafeSerializer {
     }
 
     public void register(Class c) {
-        classSchemaBuilder.registerClass(c);
+        classSchemaBuilder.registerClass(c, new HashSet<String>());
     }
 
     public synchronized byte[] serialize(Object obj) {
@@ -218,56 +220,56 @@ class UnsafeSerializer {
 
         public void writeInteger(final Integer value) {
             ensureCapacity(SIZE_OF_INT + 1);
-            if (writeAWrapper(value) == 1) {
+            if (writeAWrapper(value)) {
                 writeInt(value);
             }
         }
 
         public void writeLongWrapper(final Long value) {
             ensureCapacity(SIZE_OF_LONG + 1);
-            if (writeAWrapper(value) == 1) {
+            if (writeAWrapper(value)) {
                 writeLong(value);
             }
         }
 
         public void writeFloatWrapper(final Float value) {
             ensureCapacity(SIZE_OF_FLOAT + 1);
-            if (writeAWrapper(value) == 1) {
+            if (writeAWrapper(value)) {
                 writeFloat(value);
             }
         }
 
         public void writeDoubleWrapper(final Double value) {
             ensureCapacity(SIZE_OF_DOUBLE + 1);
-            if (writeAWrapper(value) == 1) {
+            if (writeAWrapper(value)) {
                 writeDouble(value);
             }
         }
 
         public void writeShortWrapper(final Short value) {
             ensureCapacity(SIZE_OF_SHORT);
-            if (writeAWrapper(value) == 1) {
+            if (writeAWrapper(value)) {
                 writeShort(value);
             }
         }
 
         public void writeBooleanWrapper(final Boolean value) {
             ensureCapacity(SIZE_OF_BOOLEAN + 1);
-            if (writeAWrapper(value) == 1) {
+            if (writeAWrapper(value)) {
                 writeBoolean(value);
             }
         }
 
         public void writeCharacter(final Character value) {
             ensureCapacity(SIZE_OF_CHAR + 1);
-            if (writeAWrapper(value) == 1) {
+            if (writeAWrapper(value)) {
                 writeChar(value);
             }
         }
 
         public void writeByteWrapper(final Byte value) {
             ensureCapacity(SIZE_OF_BYTE + 1);
-            if (writeAWrapper(value) == 1) {
+            if (writeAWrapper(value)) {
                 writeByte(value);
             }
         }
@@ -309,7 +311,7 @@ class UnsafeSerializer {
 
             unsafe.copyMemory(buffer, byteArrayOffset, usedBuffer, byteArrayOffset, pos);
 
-            return buffer;
+            return usedBuffer;
         }
 
         public void writeCharArray(final char[] values) {
@@ -449,15 +451,14 @@ class UnsafeSerializer {
             pos += bytesToCopy;
         }
 
-        private byte writeAWrapper(final Object value) {
-            byte flag = 0;
-            if (value == null) {
-                writeByte(flag);
+        private boolean writeAWrapper(final Object value) {
+            if (value != null) {
+                writeByte((byte) 1);
+                return true;
             } else {
-                flag = 1;
-                writeByte(flag);
+                writeByte((byte) 0);
+                return false;
             }
-            return flag;
         }
 
         private void ensureCapacity(long minCapacity) {
