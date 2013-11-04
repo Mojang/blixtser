@@ -104,7 +104,7 @@ class ClassSchemaBuilder {
         }
     }
 
-    private ClassInfo createClassInfo(Class c, Set<String> ignoreFields) {
+    ClassInfo createClassInfo(Class c, Set<String> ignoreFields) {
         ClassInfo classInfo = classInfoCache.get(c);
         if (classInfo == null) {
             List<Field> fields = getFieldsFor(c, ignoreFields);
@@ -137,7 +137,7 @@ class ClassSchemaBuilder {
 
     private List<Field> getFieldsFor(Class c, Set<String> ignoreFields) {
         List<Field> fields = new ArrayList<>();
-        Field[] ffs = c.getDeclaredFields();
+        List<Field> ffs = getAllFieldsRecursiveFor(c);
         for (Field f : ffs) {
             if (ignoreFields.contains(f.getName())) {
                 continue;
@@ -147,6 +147,15 @@ class ClassSchemaBuilder {
             }
         }
         return fields;
+    }
+
+    private List<Field> getAllFieldsRecursiveFor(Class c) {
+        if (c == Object.class) {
+            return new ArrayList<>();
+        }
+        List<Field> allFields = getAllFieldsRecursiveFor(c.getSuperclass());
+        allFields.addAll(Arrays.asList(c.getDeclaredFields()));
+        return allFields;
     }
 
     /**
