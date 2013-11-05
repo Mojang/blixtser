@@ -350,56 +350,49 @@ public class UnsafeSerializer {
         public void writeCharArray(final char[] values) {
             ensureCapacity(SIZE_OF_INT);
             writeInt(values.length);
-            writeAnArray(values.length << 1, charArrayOffset, values);
+            writeGenericArray(values.length << 1, charArrayOffset, values);
         }
 
         public void writeByteArray(final byte[] values) {
             ensureCapacity(SIZE_OF_INT);
             writeInt(values.length);
-            writeAnArray(values.length, byteArrayOffset, values);
+            writeGenericArray(values.length, byteArrayOffset, values);
         }
 
         public void writeLongArray(final long[] values) {
             ensureCapacity(SIZE_OF_INT);
             writeInt(values.length);
-            writeAnArray(values.length << 3, longArrayOffset, values);
+            writeGenericArray(values.length << 3, longArrayOffset, values);
         }
 
         public void writeDoubleArray(final double[] values) {
             ensureCapacity(SIZE_OF_INT);
             writeInt(values.length);
-            writeAnArray(values.length << 3, doubleArrayOffset, values);
+            writeGenericArray(values.length << 3, doubleArrayOffset, values);
         }
 
         public void writeFloatArray(final float[] values) {
             ensureCapacity(SIZE_OF_INT);
             writeInt(values.length);
-            writeAnArray(values.length << 2, floatArrayOffset, values);
+            writeGenericArray(values.length << 2, floatArrayOffset, values);
         }
 
         public void writeIntArray(final int[] values) {
             ensureCapacity(SIZE_OF_INT);
             writeInt(values.length);
-            writeAnArray(values.length << 2, intArrayOffset, values);
+            writeGenericArray(values.length << 2, intArrayOffset, values);
         }
 
         public void writeShortArray(final short[] values) {
             ensureCapacity(SIZE_OF_INT);
             writeInt(values.length);
-            writeAnArray(values.length << 1, shortArrayOffset, values);
+            writeGenericArray(values.length << 1, shortArrayOffset, values);
         }
 
         public void writeBooleanArray(final boolean[] values) {
             ensureCapacity(SIZE_OF_INT);
             writeInt(values.length);
-            writeAnArray(values.length, booleanArrayOffset, values);
-        }
-
-        public void writeObjectArray(final Object[] values) {
-            int indexScale = unsafe.arrayIndexScale(Object[].class);
-            ensureCapacity(SIZE_OF_INT);
-            writeInt(values.length);
-            writeAnArray(values.length << indexScale, objectArrayOffset, values);
+            writeGenericArray(values.length, booleanArrayOffset, values);
         }
 
         public char[] readCharArray() {
@@ -457,7 +450,7 @@ public class UnsafeSerializer {
             return values;
         }
 
-        public void writeAnArray(long bytesToCopy, long arrayOffset, Object values) {
+        public void writeGenericArray(long bytesToCopy, long arrayOffset, Object values) {
             ensureCapacity(bytesToCopy);
             unsafe.copyMemory(values, arrayOffset, buffer, byteArrayOffset + pos, bytesToCopy);
             pos += bytesToCopy;
