@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+import static com.mojang.serialization.SerializationUtils.unsafe;
+
 class ClassSchemaBuilder {
 
     static final Map<Integer, ClassInfo> classInfoCache = new HashMap<>();
@@ -122,7 +124,6 @@ class ClassSchemaBuilder {
                 if (serializers.containsKey(field.getType()) && deserializers.containsKey(field.getType())) {
                     fieldInfo = new FieldInfo(serializers.get(field.getType()), deserializers.get(field.getType()), offset);
                 } else if (serializers.containsKey(field.getType().getSuperclass())) {
-                    // ENUMS!
                     fieldInfo = new EnumFieldInfo(field.getType(), serializers.get(field.getType().getSuperclass()), offset);
                 } else {
                     throw new UnknownRegisteredTypeException(field.getName());
@@ -171,6 +172,7 @@ class ClassSchemaBuilder {
      *
      */
     static class FieldInfo {
+
         protected final SerializationUtils.Serializer fieldSerializer;
         protected final SerializationUtils.Deserializer fieldDeserializer;
         protected final long offset;
@@ -236,6 +238,7 @@ class ClassSchemaBuilder {
      *
      */
     static class ClassInfo {
+
         final Class<?> clazz;
         final FieldInfo[] fieldInfos;
 
@@ -243,7 +246,9 @@ class ClassSchemaBuilder {
             this.clazz = clazz;
             this.fieldInfos = fieldInfos;
         }
+
+        Object instance() throws InstantiationException {
+            return unsafe.allocateInstance(clazz);
+        }
     }
-
-
 }

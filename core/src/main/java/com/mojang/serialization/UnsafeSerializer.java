@@ -40,7 +40,8 @@ public class UnsafeSerializer {
         int code = unsafeMemory.readInt();
         ClassInfo classInfo = classInfoCache.get(code);
         try {
-            Object obj = unsafe.allocateInstance(classInfo.clazz);
+            //Object obj = unsafe.allocateInstance(classInfo.clazz);
+            Object obj = classInfo.instance();
 
             for (FieldInfo f : classInfo.fieldInfos) {
                 f.deserialize(unsafeMemory, obj);
