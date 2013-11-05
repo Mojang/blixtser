@@ -20,7 +20,7 @@ class SerializationUtils {
         }
     }
 
-    static boolean writeNullableObject(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+    private static boolean writeNullableObject(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
         if (object == null) {
             unsafeMemory.writeByte((byte) 0);
             return true;
@@ -30,10 +30,35 @@ class SerializationUtils {
         }
     }
 
-    static boolean readNullableObject(UnsafeSerializer.UnsafeMemory unsafeMemory) {
+    private static boolean readNullableObject(UnsafeSerializer.UnsafeMemory unsafeMemory) {
         byte flag = unsafeMemory.readByte();
         return flag == 0;
     }
+
+    private static void serializeObject(ClassInfo classInfo, UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+        Object serializedObject = unsafe.getObject(object, offset);
+        if (!writeNullableObject(unsafeMemory, serializedObject)) {
+            for (FieldInfo f : classInfo.fieldInfos) {
+                f.serialize(unsafeMemory, serializedObject);
+            }
+        }
+    }
+
+    private static void deserializeObject(ClassInfo classInfo, UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+        try {
+            Object deserializedObject = null;
+            if (!readNullableObject(unsafeMemory)) {
+                deserializedObject = unsafe.allocateInstance(classInfo.clazz);
+                for (FieldInfo f : classInfo.fieldInfos) {
+                    f.deserialize(unsafeMemory, deserializedObject);
+                }
+            }
+            unsafe.putObject(object, offset, deserializedObject);
+        } catch (InstantiationException e) {
+            throw new RuntimeException("Failed to deserialize StringBuffer: " + e);
+        }
+    }
+
 
 
     static interface Serializer {
@@ -247,12 +272,7 @@ class SerializationUtils {
 
         @Override
         public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-            Object stringObject = unsafe.getObject(object, offset);
-            if (!writeNullableObject(unsafeMemory, stringObject)) {
-                for (FieldInfo fi : stringClassInfo.fieldInfos) {
-                    fi.serialize(unsafeMemory, stringObject);
-                }
-            }
+            serializeObject(stringClassInfo, unsafeMemory, object, offset);
         }
 
     }
@@ -264,18 +284,7 @@ class SerializationUtils {
 
         @Override
         public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-            try {
-                Object stringObject = null;
-                if (!readNullableObject(unsafeMemory)) {
-                    stringObject = unsafe.allocateInstance(String.class);
-                    for (FieldInfo fi : stringClassInfo.fieldInfos) {
-                        fi.deserialize(unsafeMemory, stringObject);
-                    }
-                }
-                unsafe.putObject(object, offset, stringObject);
-            } catch (InstantiationException e) {
-                throw new RuntimeException("Failed to deserialize String: " + e);
-            }
+            deserializeObject(stringClassInfo, unsafeMemory, object, offset);
         }
 
     }
@@ -287,12 +296,7 @@ class SerializationUtils {
 
         @Override
         public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-            Object stringBufferObject = unsafe.getObject(object, offset);
-            if (!writeNullableObject(unsafeMemory, stringBufferObject)) {
-                for (ClassSchemaBuilder.FieldInfo f : stringBufferInfo.fieldInfos) {
-                    f.serialize(unsafeMemory, stringBufferObject);
-                }
-            }
+            serializeObject(stringBufferInfo, unsafeMemory, object, offset);
         }
     }
 
@@ -303,18 +307,7 @@ class SerializationUtils {
 
         @Override
         public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-            try {
-                Object stringBufferObject = null;
-                if (!readNullableObject(unsafeMemory)) {
-                    stringBufferObject = unsafe.allocateInstance(StringBuffer.class);
-                    for (ClassSchemaBuilder.FieldInfo f : stringBufferInfo.fieldInfos) {
-                        f.deserialize(unsafeMemory, stringBufferObject);
-                    }
-                }
-                unsafe.putObject(object, offset, stringBufferObject);
-            } catch (InstantiationException e) {
-                throw new RuntimeException("Failed to deserialize StringBuffer: " + e);
-            }
+            deserializeObject(stringBufferInfo, unsafeMemory, object, offset);
         }
     }
 
@@ -325,12 +318,7 @@ class SerializationUtils {
 
         @Override
         public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-            Object stringBufferObject = unsafe.getObject(object, offset);
-            if (!writeNullableObject(unsafeMemory, stringBufferObject)) {
-                for (ClassSchemaBuilder.FieldInfo f : stringBuilderInfo.fieldInfos) {
-                    f.serialize(unsafeMemory, stringBufferObject);
-                }
-            }
+            serializeObject(stringBuilderInfo, unsafeMemory, object, offset);
         }
     }
 
@@ -341,20 +329,10 @@ class SerializationUtils {
 
         @Override
         public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-            try {
-                Object stringBuilderObject = null;
-                if (!readNullableObject(unsafeMemory)) {
-                    stringBuilderObject = unsafe.allocateInstance(StringBuilder.class);
-                    for (ClassSchemaBuilder.FieldInfo f : stringBuilderInfo.fieldInfos) {
-                        f.deserialize(unsafeMemory, stringBuilderObject);
-                    }
-                }
-                unsafe.putObject(object, offset, stringBuilderObject);
-            } catch (InstantiationException e) {
-                throw new RuntimeException("Failed to deserialize StringBuffer: " + e);
-            }
+            deserializeObject(stringBuilderInfo, unsafeMemory, object, offset);
         }
     }
+
 
 
     /**
