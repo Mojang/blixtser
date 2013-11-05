@@ -773,5 +773,25 @@ class SerializationUtils {
         }
     }
 
+    /**
+     *
+     */
+    static class BigIntegerSerializer implements Serializer {
 
+        @Override
+        public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+            serializeObject(bigIntegerClassInfo, unsafeMemory, object, offset);
+        }
+    }
+
+    /**
+     *
+     */
+    static class BigIntegerDeserializer implements Deserializer {
+
+        @Override
+        public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+            deserializeObject(bigIntegerClassInfo, unsafeMemory, object, offset);
+        }
+    }
 }

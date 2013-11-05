@@ -2,6 +2,7 @@ package com.mojang.serialization;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigInteger;
 import java.util.*;
 
 import static com.mojang.serialization.SerializationUtils.unsafe;
@@ -14,6 +15,7 @@ class ClassSchemaBuilder {
     static ClassInfo stringClassInfo;
     static ClassInfo stringBufferInfo;
     static ClassInfo stringBuilderInfo;
+    static ClassInfo bigIntegerClassInfo;
 
     public void build() {
         buildSerializers();
@@ -25,12 +27,14 @@ class ClassSchemaBuilder {
         stringClassInfo = createClassInfo(String.class, ignoreFields);
         stringBufferInfo = createClassInfo(StringBuffer.class, new HashSet<String>());
         stringBuilderInfo = createClassInfo(StringBuilder.class, new HashSet<String>());
+        bigIntegerClassInfo = createClassInfo(BigInteger.class, new HashSet<String>());
     }
 
     private void buildSerializers() {
         serializers.put(int.class, new SerializationUtils.IntSerializer());
         serializers.put(int[].class, new SerializationUtils.IntArraySerializer());
         serializers.put(Integer.class, new SerializationUtils.IntegerSerializer());
+        serializers.put(BigInteger.class, new SerializationUtils.BigIntegerSerializer());
 
         serializers.put(long.class, new SerializationUtils.LongSerializer());
         serializers.put(long[].class, new SerializationUtils.LongArraySerializer());
@@ -72,6 +76,7 @@ class ClassSchemaBuilder {
         deserializers.put(int.class, new SerializationUtils.IntDeserializer());
         deserializers.put(int[].class, new SerializationUtils.IntArrayDeserializer());
         deserializers.put(Integer.class, new SerializationUtils.IntegerDeserializer());
+        deserializers.put(BigInteger.class, new SerializationUtils.BigIntegerDeserializer());
 
         deserializers.put(long.class, new SerializationUtils.LongDeserializer());
         deserializers.put(long[].class, new SerializationUtils.LongArrayDeserializer());
