@@ -1,6 +1,7 @@
 package com.mojang.serialization;
 
 import sun.misc.Unsafe;
+
 import java.lang.reflect.Field;
 
 import static com.mojang.serialization.ClassSchemaBuilder.*;
@@ -231,11 +232,28 @@ class SerializationUtils {
         @Override
         public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
             Object stringObject = unsafe.getObject(object, offset);
-            for (FieldInfo fi : stringClassInfo.fieldInfos) {
-                fi.serialize(unsafeMemory, stringObject);
+            if (!writeNullableObject(unsafeMemory, stringObject)) {
+                for (FieldInfo fi : stringClassInfo.fieldInfos) {
+                    fi.serialize(unsafeMemory, stringObject);
+                }
             }
         }
 
+    }
+
+    public static boolean writeNullableObject(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+        if (object == null) {
+            unsafeMemory.writeByte((byte) 0);
+            return true;
+        } else {
+            unsafeMemory.writeByte((byte) 1);
+            return false;
+        }
+    }
+
+    public static boolean readNullableObject(UnsafeSerializer.UnsafeMemory unsafeMemory) {
+        byte flag = unsafeMemory.readByte();
+        return flag == 0;
     }
 
     /**
@@ -246,9 +264,12 @@ class SerializationUtils {
         @Override
         public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
             try {
-                Object stringObject = unsafe.allocateInstance(String.class);
-                for (FieldInfo fi : stringClassInfo.fieldInfos) {
-                    fi.deserialize(unsafeMemory, stringObject);
+                Object stringObject = null;
+                if (!readNullableObject(unsafeMemory)) {
+                    stringObject = unsafe.allocateInstance(String.class);
+                    for (FieldInfo fi : stringClassInfo.fieldInfos) {
+                        fi.deserialize(unsafeMemory, stringObject);
+                    }
                 }
                 unsafe.putObject(object, offset, stringObject);
             } catch (InstantiationException e) {
@@ -266,8 +287,10 @@ class SerializationUtils {
         @Override
         public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
             Object stringBufferObject = unsafe.getObject(object, offset);
-            for (ClassSchemaBuilder.FieldInfo f : stringBufferInfo.fieldInfos) {
-                f.serialize(unsafeMemory, stringBufferObject);
+            if (!writeNullableObject(unsafeMemory, stringBufferObject)) {
+                for (ClassSchemaBuilder.FieldInfo f : stringBufferInfo.fieldInfos) {
+                    f.serialize(unsafeMemory, stringBufferObject);
+                }
             }
         }
     }
@@ -280,9 +303,12 @@ class SerializationUtils {
         @Override
         public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
             try {
-                Object stringBufferObject = unsafe.allocateInstance(StringBuffer.class);
-                for (ClassSchemaBuilder.FieldInfo f : stringBufferInfo.fieldInfos) {
-                    f.deserialize(unsafeMemory, stringBufferObject);
+                Object stringBufferObject = null;
+                if (!readNullableObject(unsafeMemory)) {
+                    stringBufferObject = unsafe.allocateInstance(StringBuffer.class);
+                    for (ClassSchemaBuilder.FieldInfo f : stringBufferInfo.fieldInfos) {
+                        f.deserialize(unsafeMemory, stringBufferObject);
+                    }
                 }
                 unsafe.putObject(object, offset, stringBufferObject);
             } catch (InstantiationException e) {
@@ -684,9 +710,13 @@ class SerializationUtils {
         @Override
         public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
             String[] stringArray = (String[]) unsafe.getObject(object, offset);
-            unsafeMemory.writeInt(stringArray.length);
-            for (String value : stringArray) {
-                unsafeMemory.writeString(value);
+            if (!writeNullableObject(unsafeMemory, stringArray)) {
+                unsafeMemory.writeInt(stringArray.length);
+                for (String value : stringArray) {
+                    if (!writeNullableObject(unsafeMemory, value)) {
+                        unsafeMemory.writeString(value);
+                    }
+                }
             }
         }
 
@@ -699,10 +729,12 @@ class SerializationUtils {
 
         @Override
         public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-
-            String[] values = new String[unsafeMemory.readInt()];
-            for (int i = 0; i < values.length; i++) {
-                values[i] = unsafeMemory.readString();
+            String[] values = null;
+            if (!readNullableObject(unsafeMemory)) {
+                values = new String[unsafeMemory.readInt()];
+                for (int i = 0; i < values.length; i++) {
+                    values[i] = unsafeMemory.readString();
+                }
             }
             unsafe.putObject(object, offset, values);
         }
