@@ -20,6 +20,22 @@ class SerializationUtils {
         }
     }
 
+    static boolean writeNullableObject(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+        if (object == null) {
+            unsafeMemory.writeByte((byte) 0);
+            return true;
+        } else {
+            unsafeMemory.writeByte((byte) 1);
+            return false;
+        }
+    }
+
+    static boolean readNullableObject(UnsafeSerializer.UnsafeMemory unsafeMemory) {
+        byte flag = unsafeMemory.readByte();
+        return flag == 0;
+    }
+
+
     static interface Serializer {
 
         void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset);
@@ -241,21 +257,6 @@ class SerializationUtils {
 
     }
 
-    public static boolean writeNullableObject(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
-        if (object == null) {
-            unsafeMemory.writeByte((byte) 0);
-            return true;
-        } else {
-            unsafeMemory.writeByte((byte) 1);
-            return false;
-        }
-    }
-
-    public static boolean readNullableObject(UnsafeSerializer.UnsafeMemory unsafeMemory) {
-        byte flag = unsafeMemory.readByte();
-        return flag == 0;
-    }
-
     /**
      *
      */
@@ -316,6 +317,45 @@ class SerializationUtils {
             }
         }
     }
+
+    /**
+     *
+     */
+    static class StringBuilderSerializer implements Serializer {
+
+        @Override
+        public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+            Object stringBufferObject = unsafe.getObject(object, offset);
+            if (!writeNullableObject(unsafeMemory, stringBufferObject)) {
+                for (ClassSchemaBuilder.FieldInfo f : stringBuilderInfo.fieldInfos) {
+                    f.serialize(unsafeMemory, stringBufferObject);
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    static class StringBuilderDeserializer implements Deserializer {
+
+        @Override
+        public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+            try {
+                Object stringBuilderObject = null;
+                if (!readNullableObject(unsafeMemory)) {
+                    stringBuilderObject = unsafe.allocateInstance(StringBuilder.class);
+                    for (ClassSchemaBuilder.FieldInfo f : stringBuilderInfo.fieldInfos) {
+                        f.deserialize(unsafeMemory, stringBuilderObject);
+                    }
+                }
+                unsafe.putObject(object, offset, stringBuilderObject);
+            } catch (InstantiationException e) {
+                throw new RuntimeException("Failed to deserialize StringBuffer: " + e);
+            }
+        }
+    }
+
 
     /**
      *
@@ -733,7 +773,9 @@ class SerializationUtils {
             if (!readNullableObject(unsafeMemory)) {
                 values = new String[unsafeMemory.readInt()];
                 for (int i = 0; i < values.length; i++) {
-                    values[i] = unsafeMemory.readString();
+                    if (!readNullableObject(unsafeMemory)) {
+                        values[i] = unsafeMemory.readString();
+                    }
                 }
             }
             unsafe.putObject(object, offset, values);
@@ -752,5 +794,6 @@ class SerializationUtils {
             unsafeMemory.writeInt((int) ordinal);
         }
     }
+
 
 }

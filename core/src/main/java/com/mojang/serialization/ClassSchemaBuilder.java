@@ -13,6 +13,7 @@ class ClassSchemaBuilder {
     static final Map<Class, SerializationUtils.Deserializer> deserializers = new HashMap<>(32);
     static ClassInfo stringClassInfo;
     static ClassInfo stringBufferInfo;
+    static ClassInfo stringBuilderInfo;
 
     public void build() {
         buildSerializers();
@@ -23,6 +24,7 @@ class ClassSchemaBuilder {
 
         stringClassInfo = createClassInfo(String.class, ignoreFields);
         stringBufferInfo = createClassInfo(StringBuffer.class, new HashSet<String>());
+        stringBuilderInfo = createClassInfo(StringBuilder.class, new HashSet<String>());
     }
 
     private void buildSerializers() {
@@ -61,6 +63,7 @@ class ClassSchemaBuilder {
         serializers.put(String.class, new SerializationUtils.StringSerializer());
         serializers.put(String[].class, new SerializationUtils.StringArraySerializer());
         serializers.put(StringBuffer.class, new SerializationUtils.StringBufferSerializer());
+        serializers.put(StringBuilder.class, new SerializationUtils.StringBuilderSerializer());
 
         serializers.put(Enum.class, new SerializationUtils.EnumSerializer());
     }
@@ -101,6 +104,8 @@ class ClassSchemaBuilder {
         deserializers.put(String.class, new SerializationUtils.StringDeserializer());
         deserializers.put(String[].class, new SerializationUtils.StringArrayDeserializer());
         deserializers.put(StringBuffer.class, new SerializationUtils.StringBufferDeserializer());
+        deserializers.put(StringBuilder.class, new SerializationUtils.StringBuilderDeserializer());
+
     }
 
     void registerClass(Class c, Set<String> ignoreFields) {
@@ -196,7 +201,7 @@ class ClassSchemaBuilder {
     /**
      *
      */
-    static class EnumFieldInfo extends FieldInfo {
+    final static class EnumFieldInfo extends FieldInfo {
 
         final Class enumClass;
         private Field ordinalField;
@@ -237,8 +242,7 @@ class ClassSchemaBuilder {
     /**
      *
      */
-    static class ClassInfo {
-
+    final static class ClassInfo {
         final Class<?> clazz;
         final FieldInfo[] fieldInfos;
 
