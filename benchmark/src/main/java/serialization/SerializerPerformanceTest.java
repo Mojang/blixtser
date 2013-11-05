@@ -9,7 +9,7 @@ public class SerializerPerformanceTest {
 
     public void setUp() {
         ArrayList<SampleValue> inputList = new ArrayList<>();
-        for (int i = 0; i < 220000; i++) {
+        for (int i = 0; i < 550000; i++) {
             inputList.add(SampleValue.createRandom());
         }
         input = inputList.toArray(new SampleValue[inputList.size()]);
@@ -18,11 +18,12 @@ public class SerializerPerformanceTest {
     public void bench() throws InterruptedException {
         setUp();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             for (int j = 0; j < serializers.length; j++) {
                 run(serializers[j]);
                 System.gc();
-                Thread.sleep(3000);
+                System.gc();
+                Thread.sleep(1000);
             }
         }
 
