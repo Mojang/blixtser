@@ -19,8 +19,8 @@ public class SerializerPerformanceTest {
         setUp();
 
         for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < serializers.length; j++) {
-                run(serializers[j]);
+            for (Serializer serializer : serializers) {
+                run(serializer);
                 System.gc();
                 System.gc();
                 Thread.sleep(1000);
