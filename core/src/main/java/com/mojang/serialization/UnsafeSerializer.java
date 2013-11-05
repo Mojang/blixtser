@@ -1,5 +1,6 @@
 package com.mojang.serialization;
 
+import java.io.*;
 import java.util.HashSet;
 
 import static com.mojang.serialization.SerializationUtils.*;
@@ -11,16 +12,15 @@ public class UnsafeSerializer {
     private final UnsafeMemory unsafeMemory = new UnsafeMemory(new byte[1024]);
     private final ClassSchemaBuilder classSchemaBuilder = new ClassSchemaBuilder();
 
-
     public UnsafeSerializer() {
         classSchemaBuilder.build();
     }
 
-    public void register(Class c) {
+    public void register(Class<?> c) {
         classSchemaBuilder.registerClass(c, new HashSet<String>());
     }
 
-    public synchronized byte[] serialize(Object obj) {
+    public byte[] serialize(Object obj) {
         unsafeMemory.reset();
 
         Class<?> c = obj.getClass();
@@ -34,8 +34,8 @@ public class UnsafeSerializer {
         return unsafeMemory.getBuffer();
     }
 
-    public synchronized Object deserialize(byte[] arr) {
-        UnsafeMemory unsafeMemory = new UnsafeMemory(arr);
+    public Object deserialize(byte[] data) {
+        UnsafeMemory unsafeMemory = new UnsafeMemory(data);
 
         int code = unsafeMemory.readInt();
         ClassInfo classInfo = classInfoCache.get(code);
@@ -50,6 +50,40 @@ public class UnsafeSerializer {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void writeObject(Object obj, OutputStream out) throws IOException {
+        byte[] data = serialize(obj);
+        int size = data.length;
+
+        out.write((size >>> 24) & 0xFF);
+        out.write((size >>> 16) & 0xFF);
+        out.write((size >>> 8) & 0xFF);
+        out.write(size & 0xFF);
+        out.write(data);
+    }
+
+    public Object readObject(InputStream in) throws IOException {
+        int b3 = in.read();
+        int b2 = in.read();
+        int b1 = in.read();
+        int b0 = in.read();
+        if ((b3 | b2 | b1 | b0) < 0) {
+            throw new EOFException();
+        }
+
+        int size = (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
+        byte[] data = new byte[size];
+
+        for (int i = 0; i < size; i++) {
+            int d = in.read();
+            if (d < 0) {
+                throw new EOFException("Couldn't read object from InputStream, EOF");
+            }
+            data[i] = (byte) d;
+        }
+
+        return deserialize(data);
     }
 
     /**
@@ -81,8 +115,6 @@ public class UnsafeSerializer {
 
         private int pos = 0;
         private byte[] buffer;
-
-        private static final int STRING_HASH_CODE = String.class.hashCode();
 
         public UnsafeMemory(final byte[] buffer) {
             if (null == buffer) {
@@ -469,8 +501,9 @@ public class UnsafeSerializer {
 
             int oldCapacity = buffer.length;
             int newCapacity = oldCapacity + (oldCapacity >> 1);
-            if (newCapacity - MAX_ARRAY_SIZE > 0)
+            if (newCapacity - MAX_ARRAY_SIZE > 0) {
                 throw new OutOfMemoryError("Could not allocate more than " + MAX_ARRAY_SIZE + " bytes for UnsafeMemory");
+            }
 
             byte[] newBuffer = new byte[newCapacity];
 
