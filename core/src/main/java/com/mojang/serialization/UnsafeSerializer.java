@@ -28,7 +28,7 @@ public class UnsafeSerializer {
         unsafeMemory.writeInt(code);
 
         for (FieldInfo f : classInfoCache.get(code).fieldInfos) {
-            f.fieldSerializer.serialize(unsafeMemory, obj, f.offset);
+            f.serialize(unsafeMemory, obj);
         }
 
         return unsafeMemory.getBuffer();
@@ -43,7 +43,7 @@ public class UnsafeSerializer {
             Object obj = unsafe.allocateInstance(classInfo.clazz);
 
             for (FieldInfo f : classInfo.fieldInfos) {
-                f.fieldDeserializer.deserialize(unsafeMemory, obj, f.offset);
+                f.deserialize(unsafeMemory, obj);
             }
 
             return obj;
@@ -225,14 +225,14 @@ public class UnsafeSerializer {
 
         public void writeString(final String value) {
             for (FieldInfo fi : stringClassInfo.fieldInfos) {
-                fi.fieldSerializer.serialize(this, value, fi.offset);
+                fi.serialize(this, value);
             }
         }
 
         public String readString() {
             String object = new String();
             for (FieldInfo fi : stringClassInfo.fieldInfos) {
-                fi.fieldDeserializer.deserialize(this, object, fi.offset);
+                fi.deserialize(this, object);
             }
             return object;
         }

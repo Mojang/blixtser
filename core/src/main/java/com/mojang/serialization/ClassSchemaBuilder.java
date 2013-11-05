@@ -60,6 +60,7 @@ class ClassSchemaBuilder {
         serializers.put(String[].class, new SerializationUtils.StringArraySerializer());
         serializers.put(StringBuffer.class, new SerializationUtils.StringBufferSerializer());
 
+        serializers.put(Enum.class, new SerializationUtils.EnumSerializer());
     }
 
     private void buildDeserializers() {
@@ -120,7 +121,10 @@ class ClassSchemaBuilder {
                 long offset = SerializationUtils.unsafe.objectFieldOffset(field);
                 if (serializers.containsKey(field.getType()) && deserializers.containsKey(field.getType())) {
                     fieldInfo = new FieldInfo(serializers.get(field.getType()), deserializers.get(field.getType()), offset);
-                } else  {
+                } else if (serializers.containsKey(field.getType().getSuperclass())) {
+                    // ENUMS!
+                    fieldInfo = new EnumFieldInfo(field.getType(), serializers.get(field.getType().getSuperclass()), offset);
+                } else {
                     throw new UnknownRegisteredTypeException(field.getName());
                 }
                 fieldInfos[i] = fieldInfo;
@@ -167,9 +171,9 @@ class ClassSchemaBuilder {
      *
      */
     static class FieldInfo {
-        final SerializationUtils.Serializer fieldSerializer;
-        final SerializationUtils.Deserializer fieldDeserializer;
-        final long offset;
+        protected final SerializationUtils.Serializer fieldSerializer;
+        protected final SerializationUtils.Deserializer fieldDeserializer;
+        protected final long offset;
 
         FieldInfo(SerializationUtils.Serializer fieldSerializer, SerializationUtils.Deserializer fieldDeserializer, long offset) {
             this.fieldSerializer = fieldSerializer;
@@ -177,6 +181,55 @@ class ClassSchemaBuilder {
             this.offset = offset;
         }
 
+        void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+            fieldSerializer.serialize(unsafeMemory, object, offset);
+        }
+
+        void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+            fieldDeserializer.deserialize(unsafeMemory, object, offset);
+        }
+
+    }
+
+    /**
+     *
+     */
+    static class EnumFieldInfo extends FieldInfo {
+
+        final Class enumClass;
+        private Field ordinalField;
+        private long ordinalOffset;
+        private Field valuesField;
+        private long valuesOffset;
+
+        EnumFieldInfo(Class enumClass, SerializationUtils.Serializer fieldSerializer, long offset) {
+            super(fieldSerializer, null, offset);
+            this.enumClass = enumClass;
+            getOrdinalField();
+        }
+
+        private void getOrdinalField() {
+            try {
+                ordinalField = enumClass.getSuperclass().getDeclaredField("ordinal");
+                valuesField = enumClass.getDeclaredField("$VALUES");
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException("Failed to get field from Enum Class:" + e.getMessage());
+            }
+
+            ordinalOffset = SerializationUtils.unsafe.objectFieldOffset(ordinalField);
+            valuesOffset = SerializationUtils.unsafe.staticFieldOffset(valuesField);
+        }
+
+        void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+            Object enumReference = SerializationUtils.unsafe.getObject(object, offset);
+            fieldSerializer.serialize(unsafeMemory, enumReference, ordinalOffset);
+        }
+
+        void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+            Object[] values = (Object[]) SerializationUtils.unsafe.getObject(enumClass, valuesOffset);
+            int ordinal = unsafeMemory.readInt();
+            SerializationUtils.unsafe.putObject(object, offset, values[ordinal]);
+        }
     }
 
     /**
@@ -191,7 +244,6 @@ class ClassSchemaBuilder {
             this.fieldInfos = fieldInfos;
         }
     }
-
 
 
 }

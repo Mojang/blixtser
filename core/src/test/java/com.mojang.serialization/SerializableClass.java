@@ -9,6 +9,7 @@ class SerializableClass extends SuperClass {
     private Long aWrapperLong;
     private StringBuffer aStringBuffer;
     private String[] aStringArray;
+    private Weekdays day;
 
     public static SerializableClass createAnObject() {
         SerializableClass serializableClass = new SerializableClass();
@@ -21,6 +22,8 @@ class SerializableClass extends SuperClass {
         for (int i = 0; i < 4; i++) {
             serializableClass.aStringArray[i] = serializableClass.aString;
         }
+        serializableClass.day = Weekdays.FRIDAY;
+
         return serializableClass;
     }
 
@@ -31,6 +34,7 @@ class SerializableClass extends SuperClass {
 
         SerializableClass that = (SerializableClass) o;
 
+        if (day != that.day) return false;
         if (anInt != that.anInt) return false;
         if (aString != null ? !aString.equals(that.aString) : that.aString != null) return false;
         if (!Arrays.equals(aStringArray, that.aStringArray)) return false;
@@ -65,5 +69,15 @@ class SerializableClass extends SuperClass {
         result = 31 * result + (aStringBuffer != null ? aStringBuffer.hashCode() : 0);
         result = 31 * result + (aStringArray != null ? Arrays.hashCode(aStringArray) : 0);
         return result;
+    }
+
+    public enum Weekdays {
+        SATURDAy,
+        SUNDAY,
+        MONDAY,
+        TUESDAY,
+        WEDNESDAY,
+        THURSDAY,
+        FRIDAY
     }
 }

@@ -232,7 +232,7 @@ class SerializationUtils {
         public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
             Object stringObject = unsafe.getObject(object, offset);
             for (FieldInfo fi : stringClassInfo.fieldInfos) {
-                fi.fieldSerializer.serialize(unsafeMemory, stringObject, fi.offset);
+                fi.serialize(unsafeMemory, stringObject);
             }
         }
 
@@ -248,7 +248,7 @@ class SerializationUtils {
             try {
                 Object stringObject = unsafe.allocateInstance(String.class);
                 for (FieldInfo fi : stringClassInfo.fieldInfos) {
-                    fi.fieldDeserializer.deserialize(unsafeMemory, stringObject, fi.offset);
+                    fi.deserialize(unsafeMemory, stringObject);
                 }
                 unsafe.putObject(object, offset, stringObject);
             } catch (InstantiationException e) {
@@ -267,7 +267,7 @@ class SerializationUtils {
         public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
             Object stringBufferObject = unsafe.getObject(object, offset);
             for (ClassSchemaBuilder.FieldInfo f : stringBufferInfo.fieldInfos) {
-                f.fieldSerializer.serialize(unsafeMemory, stringBufferObject, f.offset);
+                f.serialize(unsafeMemory, stringBufferObject);
             }
         }
     }
@@ -282,7 +282,7 @@ class SerializationUtils {
             try {
                 Object stringBufferObject = unsafe.allocateInstance(StringBuffer.class);
                 for (ClassSchemaBuilder.FieldInfo f : stringBufferInfo.fieldInfos) {
-                    f.fieldDeserializer.deserialize(unsafeMemory, stringBufferObject, f.offset);
+                    f.deserialize(unsafeMemory, stringBufferObject);
                 }
                 unsafe.putObject(object, offset, stringBufferObject);
             } catch (InstantiationException e) {
@@ -707,6 +707,18 @@ class SerializationUtils {
             unsafe.putObject(object, offset, values);
         }
 
+    }
+
+    /**
+     *
+     */
+    static class EnumSerializer implements Serializer {
+
+        @Override
+        public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+            Object ordinal = unsafe.getInt(object, offset);
+            unsafeMemory.writeInt((int) ordinal);
+        }
     }
 
 }
