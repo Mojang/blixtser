@@ -7,9 +7,10 @@ import java.util.*;
 class ClassSchemaBuilder {
 
     static final Map<Integer, ClassInfo> classInfoCache = new HashMap<>();
-    static ClassInfo stringClassInfo;
     static final Map<Class, SerializationUtils.Serializer> serializers = new HashMap<>(32);
     static final Map<Class, SerializationUtils.Deserializer> deserializers = new HashMap<>(32);
+    static ClassInfo stringClassInfo;
+    static ClassInfo stringBufferInfo;
 
     public void build() {
         buildSerializers();
@@ -19,6 +20,7 @@ class ClassSchemaBuilder {
         ignoreFields.add("hash");
 
         stringClassInfo = createClassInfo(String.class, ignoreFields);
+        stringBufferInfo = createClassInfo(StringBuffer.class, new HashSet<String>());
     }
 
     private void buildSerializers() {
@@ -56,6 +58,8 @@ class ClassSchemaBuilder {
 
         serializers.put(String.class, new SerializationUtils.StringSerializer());
         serializers.put(String[].class, new SerializationUtils.StringArraySerializer());
+        serializers.put(StringBuffer.class, new SerializationUtils.StringBufferSerializer());
+
     }
 
     private void buildDeserializers() {
@@ -93,6 +97,7 @@ class ClassSchemaBuilder {
 
         deserializers.put(String.class, new SerializationUtils.StringDeserializer());
         deserializers.put(String[].class, new SerializationUtils.StringArrayDeserializer());
+        deserializers.put(StringBuffer.class, new SerializationUtils.StringBufferDeserializer());
     }
 
     void registerClass(Class c, Set<String> ignoreFields) {

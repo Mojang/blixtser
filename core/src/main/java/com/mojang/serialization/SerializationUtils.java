@@ -1,8 +1,9 @@
 package com.mojang.serialization;
 
 import sun.misc.Unsafe;
-
 import java.lang.reflect.Field;
+
+import static com.mojang.serialization.ClassSchemaBuilder.*;
 
 class SerializationUtils {
 
@@ -229,7 +230,10 @@ class SerializationUtils {
 
         @Override
         public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-            unsafeMemory.writeString((String) unsafe.getObject(object, offset));
+            Object stringObject = unsafe.getObject(object, offset);
+            for (FieldInfo fi : stringClassInfo.fieldInfos) {
+                fi.fieldSerializer.serialize(unsafeMemory, stringObject, fi.offset);
+            }
         }
 
     }
@@ -241,9 +245,50 @@ class SerializationUtils {
 
         @Override
         public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-            unsafe.putObject(object, offset, unsafeMemory.readString());
+            try {
+                Object stringObject = unsafe.allocateInstance(String.class);
+                for (FieldInfo fi : stringClassInfo.fieldInfos) {
+                    fi.fieldDeserializer.deserialize(unsafeMemory, stringObject, fi.offset);
+                }
+                unsafe.putObject(object, offset, stringObject);
+            } catch (InstantiationException e) {
+                throw new RuntimeException("Failed to deserialize String: " + e);
+            }
         }
 
+    }
+
+    /**
+     *
+     */
+    static class StringBufferSerializer implements Serializer {
+
+        @Override
+        public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+            Object stringBufferObject = unsafe.getObject(object, offset);
+            for (ClassSchemaBuilder.FieldInfo f : stringBufferInfo.fieldInfos) {
+                f.fieldSerializer.serialize(unsafeMemory, stringBufferObject, f.offset);
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    static class StringBufferDeserializer implements Deserializer {
+
+        @Override
+        public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+            try {
+                Object stringBufferObject = unsafe.allocateInstance(StringBuffer.class);
+                for (ClassSchemaBuilder.FieldInfo f : stringBufferInfo.fieldInfos) {
+                    f.fieldDeserializer.deserialize(unsafeMemory, stringBufferObject, f.offset);
+                }
+                unsafe.putObject(object, offset, stringBufferObject);
+            } catch (InstantiationException e) {
+                throw new RuntimeException("Failed to deserialize StringBuffer: " + e);
+            }
+        }
     }
 
     /**
@@ -638,7 +683,11 @@ class SerializationUtils {
 
         @Override
         public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-            unsafeMemory.writeStringArray((String[]) unsafe.getObject(object, offset));
+            String[] stringArray = (String[]) unsafe.getObject(object, offset);
+            unsafeMemory.writeInt(stringArray.length);
+            for (String value : stringArray) {
+                unsafeMemory.writeString(value);
+            }
         }
 
     }
@@ -650,7 +699,12 @@ class SerializationUtils {
 
         @Override
         public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
-            unsafe.putObject(object, offset, unsafeMemory.readStringArray());
+
+            String[] values = new String[unsafeMemory.readInt()];
+            for (int i = 0; i < values.length; i++) {
+                values[i] = unsafeMemory.readString();
+            }
+            unsafe.putObject(object, offset, values);
         }
 
     }

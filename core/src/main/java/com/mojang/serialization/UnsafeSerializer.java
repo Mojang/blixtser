@@ -394,14 +394,6 @@ public class UnsafeSerializer {
             writeAnArray(values.length, booleanArrayOffset, values);
         }
 
-        public void writeStringArray(final String[] values) {
-            ensureCapacity(SIZE_OF_INT);
-            writeInt(values.length);
-            for (String value : values) {
-                writeString(value);
-            }
-        }
-
         public void writeObjectArray(final Object[] values) {
             int indexScale = unsafe.arrayIndexScale(Object[].class);
             ensureCapacity(SIZE_OF_INT);
@@ -454,14 +446,6 @@ public class UnsafeSerializer {
         public boolean[] readBooleanArray() {
             boolean[] values = new boolean[readInt()];
             readAnArray(values.length, booleanArrayOffset, values);
-            return values;
-        }
-
-        public String[] readStringArray() {
-            String[] values = new String[readInt()];
-            for (int i = 0; i < values.length; i++) {
-                values[i] = readString();
-            }
             return values;
         }
 
