@@ -9,7 +9,7 @@ import static com.mojang.serialization.SerializationUtils.unsafe;
 
 class ClassSchemaBuilder {
 
-    private TypeRepository typeRepository = new TypeRepository();
+    private static TypeRepository typeRepository = new TypeRepository();
 
     static final Map<Integer, ClassInfo> classInfoCache = new HashMap<>();
 
@@ -45,17 +45,17 @@ class ClassSchemaBuilder {
             for (int i = 0; i < fields.size(); i++) {
                 FieldInfo fieldInfo;
                 Field field = fields.get(i);
-                long offset = SerializationUtils.unsafe.objectFieldOffset(field);
                 if (typeRepository.serializers.containsKey(field.getType()) && typeRepository.deserializers.containsKey(field.getType())) {
-                    fieldInfo = new FieldInfo(typeRepository.serializers.get(field.getType()), typeRepository.deserializers.get(field.getType()), offset);
+                    fieldInfo = new FieldInfo(field, typeRepository.serializers.get(field.getType()), typeRepository.deserializers.get(field.getType()));
                 } else if (typeRepository.serializers.containsKey(field.getType().getSuperclass())) {
-                    fieldInfo = new EnumFieldInfo(field.getType(), typeRepository.serializers.get(field.getType().getSuperclass()), offset);
+                    fieldInfo = new EnumFieldInfo(field, typeRepository.serializers.get(field.getType().getSuperclass()));
                 } else {
                     throw new UnknownRegisteredTypeException(field.getName());
                 }
                 fieldInfos[i] = fieldInfo;
             }
             sortFieldInfo(fieldInfos);
+            fieldInfos = mergeFields(fieldInfos);
             classInfo = new ClassInfo(c, fieldInfos);
         }
         return classInfo;
@@ -93,19 +93,42 @@ class ClassSchemaBuilder {
         return allFields;
     }
 
+    private FieldInfo[] mergeFields(FieldInfo[] fields) {
+        if (fields.length == 1 || fields.length == 0) {
+            return fields;
+        }
+
+        List<FieldInfo> result = new ArrayList<>();
+        result.add(fields[0]);
+        for (int i=1; i<fields.length; i++) {
+            FieldInfo latestField = result.get(result.size() - 1);
+            FieldInfo currentField = fields[i];
+            if (latestField.isPrimitive() && currentField.isPrimitive()) {
+                BatchFieldInfo batchField = latestField.merge(currentField);
+                result.set(result.size() - 1, batchField);
+            } else {
+                result.add(currentField);
+            }
+        }
+
+        return result.toArray(new FieldInfo[result.size()]);
+    }
+
     /**
      *
      */
     static class FieldInfo {
 
-        protected final SerializationUtils.Serializer fieldSerializer;
-        protected final SerializationUtils.Deserializer fieldDeserializer;
-        protected final long offset;
+        protected SerializationUtils.Serializer fieldSerializer;
+        protected SerializationUtils.Deserializer fieldDeserializer;
+        protected final Field field;
+        protected long offset;
 
-        FieldInfo(SerializationUtils.Serializer fieldSerializer, SerializationUtils.Deserializer fieldDeserializer, long offset) {
+        FieldInfo(Field field, SerializationUtils.Serializer fieldSerializer, SerializationUtils.Deserializer fieldDeserializer) {
+            this.field = field;
             this.fieldSerializer = fieldSerializer;
             this.fieldDeserializer = fieldDeserializer;
-            this.offset = offset;
+            this.offset = SerializationUtils.unsafe.objectFieldOffset(field);
         }
 
         void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
@@ -116,6 +139,33 @@ class ClassSchemaBuilder {
             fieldDeserializer.deserialize(unsafeMemory, object, offset);
         }
 
+        boolean isPrimitive() {
+            return field.getType().isPrimitive();
+        }
+
+        public BatchFieldInfo merge(FieldInfo lastField) {
+            int size = (int) (lastField.offset - this.offset + typeRepository.typeSizes.get(lastField.field.getType()));
+            return new BatchFieldInfo(this, size);
+        }
+    }
+
+    /**
+     *
+     */
+    static class BatchFieldInfo extends FieldInfo {
+
+        private final FieldInfo firstField;
+
+        BatchFieldInfo(FieldInfo firstField, int size) {
+            super(firstField.field, new SerializationUtils.BatchSerializer(size), new SerializationUtils.BatchDeserializer(size));
+            this.firstField = firstField;
+        }
+
+        public BatchFieldInfo merge(FieldInfo lastField) {
+            int size = (int) (lastField.offset - this.offset + typeRepository.typeSizes.get(lastField.field.getType()));
+            return new BatchFieldInfo(firstField, size);
+        }
+
     }
 
     /**
@@ -123,22 +173,21 @@ class ClassSchemaBuilder {
      */
     final static class EnumFieldInfo extends FieldInfo {
 
-        final Class enumClass;
         private Field ordinalField;
         private long ordinalOffset;
         private Field valuesField;
         private long valuesOffset;
 
-        EnumFieldInfo(Class enumClass, SerializationUtils.Serializer fieldSerializer, long offset) {
-            super(fieldSerializer, null, offset);
-            this.enumClass = enumClass;
+        EnumFieldInfo(Field field, SerializationUtils.Serializer fieldSerializer) {
+            super(field, fieldSerializer, null);
+            offset = SerializationUtils.unsafe.objectFieldOffset(field);
             getOrdinalField();
         }
 
         private void getOrdinalField() {
             try {
-                ordinalField = enumClass.getSuperclass().getDeclaredField("ordinal");
-                valuesField = enumClass.getDeclaredField("$VALUES");
+                ordinalField = field.getType().getSuperclass().getDeclaredField("ordinal");
+                valuesField = field.getType().getDeclaredField("$VALUES");
             } catch (NoSuchFieldException e) {
                 throw new RuntimeException("Failed to get field from Enum Class:" + e.getMessage());
             }
@@ -153,7 +202,7 @@ class ClassSchemaBuilder {
         }
 
         void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
-            Object[] values = (Object[]) SerializationUtils.unsafe.getObject(enumClass, valuesOffset);
+            Object[] values = (Object[]) SerializationUtils.unsafe.getObject(field.getType(), valuesOffset);
             int ordinal = unsafeMemory.readInt();
             SerializationUtils.unsafe.putObject(object, offset, values[ordinal]);
         }

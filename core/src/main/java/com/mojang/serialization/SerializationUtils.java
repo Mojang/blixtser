@@ -794,4 +794,40 @@ class SerializationUtils {
             deserializeObject(bigIntegerClassInfo, unsafeMemory, object, offset);
         }
     }
+
+    /**
+     *
+     */
+    static class BatchSerializer implements Serializer {
+
+        private final int size;
+
+        BatchSerializer(int size) {
+            this.size = size;
+        }
+
+        @Override
+        public void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+            unsafeMemory.writeBatch(object, offset, size);
+        }
+    }
+
+    /**
+     *
+     */
+    static class BatchDeserializer implements Deserializer {
+
+        private final int size;
+
+        BatchDeserializer(int size) {
+            this.size = size;
+        }
+
+        @Override
+        public void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object, long offset) {
+            unsafeMemory.readBatch(object, offset, size);
+        }
+    }
+
+
 }

@@ -90,7 +90,7 @@ public class UnsafeSerializer {
 
         private static final int INITIAL_CAPACITY = 1024;
 
-        private static final long byteArrayOffset = unsafe.arrayBaseOffset(byte[].class);
+        static final long byteArrayOffset = unsafe.arrayBaseOffset(byte[].class);
         private static final long shortArrayOffset = unsafe.arrayBaseOffset(short[].class);
         private static final long intArrayOffset = unsafe.arrayBaseOffset(int[].class);
         private static final long charArrayOffset = unsafe.arrayBaseOffset(char[].class);
@@ -98,8 +98,6 @@ public class UnsafeSerializer {
         private static final long longArrayOffset = unsafe.arrayBaseOffset(long[].class);
         private static final long doubleArrayOffset = unsafe.arrayBaseOffset(double[].class);
         private static final long booleanArrayOffset = unsafe.arrayBaseOffset(boolean[].class);
-
-        private static final long objectArrayOffset = unsafe.arrayBaseOffset(Object[].class);
 
         private static final int SIZE_OF_LONG = 8;
         private static final int SIZE_OF_DOUBLE = 8;
@@ -112,8 +110,8 @@ public class UnsafeSerializer {
 
         private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
-        private int pos = 0;
-        private byte[] buffer;
+        int pos = 0;
+        byte[] buffer;
 
         public UnsafeMemory(final byte[] buffer) {
             if (null == buffer) {
@@ -445,13 +443,6 @@ public class UnsafeSerializer {
             return values;
         }
 
-        public Object[] readObjectArray() {
-            int indexScale = unsafe.arrayIndexScale(Object[].class);
-            Object[] values = new Object[readInt()];
-            readAnArray(values.length << indexScale, objectArrayOffset, values);
-            return values;
-        }
-
         public void writeGenericArray(long bytesToCopy, long arrayOffset, Object values) {
             ensureCapacity(bytesToCopy);
             unsafe.copyMemory(values, arrayOffset, buffer, byteArrayOffset + pos, bytesToCopy);
@@ -471,6 +462,35 @@ public class UnsafeSerializer {
                 writeByte((byte) 0);
                 return false;
             }
+        }
+
+        public void writeBatch(Object object, long offset, int size) {
+            ensureCapacity(size);
+            unsafe.copyMemory(object, offset, buffer, byteArrayOffset + pos, size);
+            pos += size;
+        }
+
+        public void readBatch(Object object, long offset, int size) {
+            long off = offset;
+
+            while (size >= SIZE_OF_LONG) {
+                unsafe.putLong(object, off, readLong());
+                off += SIZE_OF_LONG;
+                size -= SIZE_OF_LONG;
+            }
+
+            while (size >= SIZE_OF_INT) {
+                unsafe.putInt(object, off, readInt());
+                off += SIZE_OF_INT;
+                size -= SIZE_OF_INT;
+            }
+
+            while (size >= SIZE_OF_BYTE) {
+                unsafe.putByte(object, off, readByte());
+                off += SIZE_OF_BYTE;
+                size -= SIZE_OF_BYTE;
+            }
+
         }
 
         private void ensureCapacity(long minCapacity) {

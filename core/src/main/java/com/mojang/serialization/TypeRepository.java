@@ -8,10 +8,24 @@ public class TypeRepository {
 
     final Map<Class, SerializationUtils.Serializer> serializers = new HashMap<>(32);
     final Map<Class, SerializationUtils.Deserializer> deserializers = new HashMap<>(32);
+    final Map<Class, Integer> typeSizes = new HashMap<>(8);
+
 
     public TypeRepository() {
         buildSerializers();
         buildDeserializers();
+        buildPrimitiveTypeSizes();
+    }
+
+    private void buildPrimitiveTypeSizes() {
+        typeSizes.put(long.class, 8);
+        typeSizes.put(double.class, 8);
+        typeSizes.put(int.class, 4);
+        typeSizes.put(float.class, 4);
+        typeSizes.put(char.class, 2);
+        typeSizes.put(short.class, 2);
+        typeSizes.put(boolean.class, 1);
+        typeSizes.put(byte.class, 1);
     }
 
     private void buildSerializers() {
