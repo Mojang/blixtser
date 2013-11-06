@@ -10,11 +10,6 @@ public class ClassSchemaBuilderTest {
 
     private ClassSchemaBuilder classSchemaBuilder = new ClassSchemaBuilder();
 
-    @Before
-    public void setUp() {
-        classSchemaBuilder.build();
-    }
-
     @Test
     public void test_with_super_class() {
         ClassSchemaBuilder.ClassInfo classInfo = classSchemaBuilder.createClassInfo(SerializableClass.class, new HashSet<String>());

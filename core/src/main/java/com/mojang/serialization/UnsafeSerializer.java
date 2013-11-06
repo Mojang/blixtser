@@ -9,12 +9,8 @@ import static com.mojang.serialization.ClassSchemaBuilder.*;
 @SuppressWarnings("all")
 public class UnsafeSerializer {
 
-    private final UnsafeMemory unsafeMemory = new UnsafeMemory(new byte[1024]);
+    private final UnsafeMemory unsafeMemory = new UnsafeMemory();
     private final ClassSchemaBuilder classSchemaBuilder = new ClassSchemaBuilder();
-
-    public UnsafeSerializer() {
-        classSchemaBuilder.build();
-    }
 
     public void register(Class<?> c) {
         classSchemaBuilder.registerClass(c, new HashSet<String>());
@@ -92,6 +88,8 @@ public class UnsafeSerializer {
      */
     static class UnsafeMemory {
 
+        private static final int INITIAL_CAPACITY = 1024;
+
         private static final long byteArrayOffset = unsafe.arrayBaseOffset(byte[].class);
         private static final long shortArrayOffset = unsafe.arrayBaseOffset(short[].class);
         private static final long intArrayOffset = unsafe.arrayBaseOffset(int[].class);
@@ -123,6 +121,10 @@ public class UnsafeSerializer {
             }
 
             this.buffer = buffer;
+        }
+
+        public UnsafeMemory() {
+            this.buffer = new byte[INITIAL_CAPACITY];
         }
 
         public void reset() {
