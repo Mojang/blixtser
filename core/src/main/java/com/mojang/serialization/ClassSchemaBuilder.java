@@ -131,11 +131,11 @@ class ClassSchemaBuilder {
             this.offset = SerializationUtils.unsafe.objectFieldOffset(field);
         }
 
-        void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+        void serialize(UnsafeMemory unsafeMemory, Object object) {
             fieldSerializer.serialize(unsafeMemory, object, offset);
         }
 
-        void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+        void deserialize(UnsafeMemory unsafeMemory, Object object) {
             fieldDeserializer.deserialize(unsafeMemory, object, offset);
         }
 
@@ -152,7 +152,7 @@ class ClassSchemaBuilder {
     /**
      *
      */
-    static class BatchFieldInfo extends FieldInfo {
+    final static class BatchFieldInfo extends FieldInfo {
 
         private final FieldInfo firstField;
 
@@ -196,12 +196,12 @@ class ClassSchemaBuilder {
             valuesOffset = SerializationUtils.unsafe.staticFieldOffset(valuesField);
         }
 
-        void serialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+        void serialize(UnsafeMemory unsafeMemory, Object object) {
             Object enumReference = SerializationUtils.unsafe.getObject(object, offset);
             fieldSerializer.serialize(unsafeMemory, enumReference, ordinalOffset);
         }
 
-        void deserialize(UnsafeSerializer.UnsafeMemory unsafeMemory, Object object) {
+        void deserialize(UnsafeMemory unsafeMemory, Object object) {
             Object[] values = (Object[]) SerializationUtils.unsafe.getObject(field.getType(), valuesOffset);
             int ordinal = unsafeMemory.readInt();
             SerializationUtils.unsafe.putObject(object, offset, values[ordinal]);
