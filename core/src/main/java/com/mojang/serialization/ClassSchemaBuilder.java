@@ -43,22 +43,46 @@ class ClassSchemaBuilder {
             List<Field> fields = getFieldsFor(c, ignoreFields);
             FieldInfo[] fieldInfos = new FieldInfo[fields.size()];
             for (int i = 0; i < fields.size(); i++) {
-                FieldInfo fieldInfo;
                 Field field = fields.get(i);
-                if (typeRepository.serializers.containsKey(field.getType()) && typeRepository.deserializers.containsKey(field.getType())) {
-                    fieldInfo = new FieldInfo(field, typeRepository.serializers.get(field.getType()), typeRepository.deserializers.get(field.getType()));
-                } else if (typeRepository.serializers.containsKey(field.getType().getSuperclass())) {
-                    fieldInfo = new EnumFieldInfo(field, typeRepository.serializers.get(field.getType().getSuperclass()));
-                } else {
-                    throw new UnknownRegisteredTypeException(field.getName());
-                }
-                fieldInfos[i] = fieldInfo;
+                fieldInfos[i] = createFieldInfo(field);
             }
             sortFieldInfo(fieldInfos);
             fieldInfos = mergeFields(fieldInfos);
             classInfo = new ClassInfo(c, fieldInfos);
         }
         return classInfo;
+    }
+
+    private FieldInfo createFieldInfo(Field field) {
+        if (Modifier.isVolatile(field.getModifiers())) {
+            return createVolatileField(field);
+        } else {
+            return createNonVolatileField(field);
+        }
+    }
+
+    private FieldInfo createNonVolatileField(Field field) {
+        FieldInfo fieldInfo;
+        if (typeRepository.serializers.containsKey(field.getType()) && typeRepository.deserializers.containsKey(field.getType())) {
+            fieldInfo = new FieldInfo(field, typeRepository.serializers.get(field.getType()), typeRepository.deserializers.get(field.getType()));
+        } else if (typeRepository.serializers.containsKey(field.getType().getSuperclass())) {
+            fieldInfo = new EnumFieldInfo(field, typeRepository.serializers.get(field.getType().getSuperclass()));
+        } else {
+            throw new UnknownRegisteredTypeException(field.getName());
+        }
+        return fieldInfo;
+    }
+
+    private FieldInfo createVolatileField(Field field) {
+        FieldInfo fieldInfo;
+        if (typeRepository.volatileSerializers.containsKey(field.getType()) && typeRepository.volatileDeserializers.containsKey(field.getType())) {
+            fieldInfo = new FieldInfo(field, typeRepository.volatileSerializers.get(field.getType()), typeRepository.volatileDeserializers.get(field.getType()));
+        } else if (typeRepository.serializers.containsKey(field.getType().getSuperclass())) {
+            fieldInfo = new EnumVolatileFieldInfo(field, typeRepository.volatileSerializers.get(field.getType().getSuperclass()));
+        } else {
+            throw new UnknownRegisteredTypeException(field.getName());
+        }
+        return fieldInfo;
     }
 
     private void sortFieldInfo(FieldInfo[] infos) {
@@ -103,7 +127,7 @@ class ClassSchemaBuilder {
         for (int i=1; i<fields.length; i++) {
             FieldInfo latestField = result.get(result.size() - 1);
             FieldInfo currentField = fields[i];
-            if (latestField.isPrimitive() && currentField.isPrimitive()) {
+            if (latestField.isPrimitive() && currentField.isPrimitive() && !latestField.isVolatile() && !currentField.isVolatile()) {
                 BatchFieldInfo batchField = latestField.merge(currentField);
                 result.set(result.size() - 1, batchField);
             } else {
@@ -143,6 +167,10 @@ class ClassSchemaBuilder {
             return field.getType().isPrimitive();
         }
 
+        boolean isVolatile() {
+            return Modifier.isVolatile(field.getModifiers());
+        }
+
         public BatchFieldInfo merge(FieldInfo lastField) {
             int size = (int) (lastField.offset - this.offset + typeRepository.typeSizes.get(lastField.field.getType()));
             return new BatchFieldInfo(this, size);
@@ -171,12 +199,12 @@ class ClassSchemaBuilder {
     /**
      *
      */
-    final static class EnumFieldInfo extends FieldInfo {
+    static class EnumFieldInfo extends FieldInfo {
 
-        private Field ordinalField;
-        private long ordinalOffset;
-        private Field valuesField;
-        private long valuesOffset;
+        protected Field ordinalField;
+        protected long ordinalOffset;
+        protected Field valuesField;
+        protected long valuesOffset;
 
         EnumFieldInfo(Field field, SerializationUtils.Serializer fieldSerializer) {
             super(field, fieldSerializer, null);
@@ -205,6 +233,27 @@ class ClassSchemaBuilder {
             Object[] values = (Object[]) SerializationUtils.unsafe.getObject(field.getType(), valuesOffset);
             int ordinal = unsafeMemory.readInt();
             SerializationUtils.unsafe.putObject(object, offset, values[ordinal]);
+        }
+    }
+
+    /**
+     *
+     */
+    static class EnumVolatileFieldInfo extends EnumFieldInfo {
+
+        EnumVolatileFieldInfo(Field field, SerializationUtils.Serializer fieldSerializer) {
+            super(field, fieldSerializer);
+        }
+
+        void serialize(UnsafeMemory unsafeMemory, Object object) {
+            Object enumReference = SerializationUtils.unsafe.getObjectVolatile(object, offset);
+            fieldSerializer.serialize(unsafeMemory, enumReference, ordinalOffset);
+        }
+
+        void deserialize(UnsafeMemory unsafeMemory, Object object) {
+            Object[] values = (Object[]) SerializationUtils.unsafe.getObject(field.getType(), valuesOffset);
+            int ordinal = unsafeMemory.readInt();
+            SerializationUtils.unsafe.putObjectVolatile(object, offset, values[ordinal]);
         }
     }
 

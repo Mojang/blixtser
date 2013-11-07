@@ -11,7 +11,7 @@ class SerializableClass extends SuperClass {
     private StringBuffer aStringBuffer;
     private StringBuilder aStringBuilder;
     private String[] aStringArray;
-    private Weekdays day;
+    private volatile Weekdays day;
     private BigInteger aBigInteger;
 
     public static SerializableClass createAnObject() {

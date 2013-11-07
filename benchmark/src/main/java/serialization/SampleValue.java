@@ -11,7 +11,7 @@ import java.util.UUID;
 public class SampleValue implements Serializable {
 
     String aString;
-    int aInt;
+    volatile int aInt;
     long aWrappedLong;
     byte aByte;
 /*
