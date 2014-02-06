@@ -1,7 +1,7 @@
-package com.mojang.serialization;
+package com.mojang.blixtser.core;
 
-import static com.mojang.serialization.ClassSchemaBuilder.stringClassInfo;
-import static com.mojang.serialization.SerializationUtils.unsafe;
+import static com.mojang.blixtser.core.ClassSchemaBuilder.stringClassInfo;
+import static com.mojang.blixtser.core.SerializationUtils.unsafe;
 
 public class UnsafeMemory {
 

@@ -1,4 +1,4 @@
-package com.mojang.serialization;
+package com.mojang.blixtser.core;
 
 public class UnknownRegisteredTypeException extends RuntimeException {
 

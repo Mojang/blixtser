@@ -1,7 +1,7 @@
-package com.mojang.serialization;
+package com.mojang.blixtser.core;
 
+import com.mojang.blixtser.core.ClassSchemaBuilder;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashSet;

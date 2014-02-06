@@ -1,4 +1,4 @@
-package serialization;
+package com.mojang.blixtser.benchmark;
 
 import de.ruedigermoeller.serialization.FSTConfiguration;
 import de.ruedigermoeller.serialization.FSTObjectInput;

@@ -6,6 +6,6 @@ dependencies {
 }
 
 task runO(dependsOn: classes, type: JavaExec) {
-    main = 'serialization.SerializerPerformanceTest';
+    main = 'com.mojang.blixtser.benchmark.SerializerPerformanceTest';
     classpath = sourceSets.main.runtimeClasspath;
 }

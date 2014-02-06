@@ -1,10 +1,10 @@
-package com.mojang.serialization;
+package com.mojang.blixtser.core;
 
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
 
-import static com.mojang.serialization.ClassSchemaBuilder.*;
+import static com.mojang.blixtser.core.ClassSchemaBuilder.*;
 
 class SerializationUtils {
 

@@ -1,12 +1,12 @@
-package serialization;
+package com.mojang.blixtser.benchmark;
 
-import com.mojang.serialization.UnsafeSerializer;
+import com.mojang.blixtser.core.UnsafeSerializer;
 
-public class MojangSerializer implements Serializer {
+public class BlixtserSerializer implements Serializer {
 
     UnsafeSerializer unsafeSerializer = new UnsafeSerializer();
 
-    public MojangSerializer() {
+    public BlixtserSerializer() {
         unsafeSerializer.register(SampleValue.class);
     }
 

@@ -1,10 +1,9 @@
-package com.mojang.serialization;
+package com.mojang.blixtser.core;
 
 import java.io.*;
 import java.util.HashSet;
 
-import static com.mojang.serialization.SerializationUtils.*;
-import static com.mojang.serialization.ClassSchemaBuilder.*;
+import static com.mojang.blixtser.core.ClassSchemaBuilder.*;
 
 @SuppressWarnings("all")
 public class UnsafeSerializer {

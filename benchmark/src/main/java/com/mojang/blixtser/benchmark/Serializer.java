@@ -1,4 +1,4 @@
-package serialization;
+package com.mojang.blixtser.benchmark;
 
 /*
  * <pre>

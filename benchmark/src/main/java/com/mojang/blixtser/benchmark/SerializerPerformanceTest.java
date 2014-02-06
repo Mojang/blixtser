@@ -1,10 +1,10 @@
-package serialization;
+package com.mojang.blixtser.benchmark;
 
 import java.util.ArrayList;
 
 public class SerializerPerformanceTest {
 
-    Serializer[] serializers = new Serializer[]{new MojangSerializer(), new FastSerializer()};
+    Serializer[] serializers = new Serializer[]{new BlixtserSerializer(), new FastSerializer()};
     static SampleValue[] input = null;
 
     public void setUp() {

@@ -1,11 +1,9 @@
-package com.mojang.serialization;
+package com.mojang.blixtser.core;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.*;
-
-import static com.mojang.serialization.SerializationUtils.unsafe;
 
 class ClassSchemaBuilder {
 
@@ -270,7 +268,7 @@ class ClassSchemaBuilder {
         }
 
         Object instance() throws InstantiationException {
-            return unsafe.allocateInstance(clazz);
+            return SerializationUtils.unsafe.allocateInstance(clazz);
         }
     }
 }

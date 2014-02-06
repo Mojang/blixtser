@@ -24,7 +24,7 @@ subprojects {
 }
 
 allprojects {
-    group = 'com.mojang.moriatim'
+    group = 'com.mojang.blixtser'
     version = '1.0.0'
 
     targetCompatibility = 1.7

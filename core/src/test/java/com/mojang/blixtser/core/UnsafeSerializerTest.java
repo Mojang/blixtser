@@ -1,5 +1,6 @@
-package com.mojang.serialization;
+package com.mojang.blixtser.core;
 
+import com.mojang.blixtser.core.UnsafeSerializer;
 import org.junit.Assert;
 import org.junit.Test;
 
