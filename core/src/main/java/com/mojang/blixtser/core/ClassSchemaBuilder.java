@@ -5,9 +5,9 @@ import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.*;
 
-class ClassSchemaBuilder {
+import static com.mojang.blixtser.core.TypeRepository.*;
 
-    private static TypeRepository typeRepository = new TypeRepository();
+class ClassSchemaBuilder {
 
     static final Map<Integer, ClassInfo> classInfoCache = new HashMap<>();
 
@@ -21,9 +21,9 @@ class ClassSchemaBuilder {
         ignoreFields.add("hash");
 
         stringClassInfo = createClassInfo(String.class, ignoreFields);
-        stringBufferInfo = createClassInfo(StringBuffer.class, new HashSet<String>());
-        stringBuilderInfo = createClassInfo(StringBuilder.class, new HashSet<String>());
-        bigIntegerClassInfo = createClassInfo(BigInteger.class, new HashSet<String>());
+        stringBufferInfo = createClassInfo(StringBuffer.class);
+        stringBuilderInfo = createClassInfo(StringBuilder.class);
+        bigIntegerClassInfo = createClassInfo(BigInteger.class);
     }
 
     void registerClass(Class c, Set<String> ignoreFields) {
@@ -35,17 +35,21 @@ class ClassSchemaBuilder {
         }
     }
 
-    ClassInfo createClassInfo(Class c, Set<String> ignoreFields) {
+    ClassInfo createClassInfo(Class<?> c) {
+        return createClassInfo(c, Collections.<String>emptySet());
+    }
+
+    ClassInfo createClassInfo(Class<?> c, Set<String> fieldNamesToIgnore) {
         ClassInfo classInfo = classInfoCache.get(c);
         if (classInfo == null) {
-            List<Field> fields = getFieldsFor(c, ignoreFields);
+            List<Field> fields = getFieldsFor(c, fieldNamesToIgnore);
             FieldInfo[] fieldInfos = new FieldInfo[fields.size()];
             for (int i = 0; i < fields.size(); i++) {
                 Field field = fields.get(i);
                 fieldInfos[i] = createFieldInfo(field);
             }
             sortFieldInfo(fieldInfos);
-            fieldInfos = mergeFields(fieldInfos);
+            fieldInfos = mergeNonVolatilePrimitiveFields(fieldInfos);
             classInfo = new ClassInfo(c, fieldInfos);
         }
         return classInfo;
@@ -60,27 +64,24 @@ class ClassSchemaBuilder {
     }
 
     private FieldInfo createNonVolatileField(Field field) {
-        FieldInfo fieldInfo;
-        if (typeRepository.serializers.containsKey(field.getType()) && typeRepository.deserializers.containsKey(field.getType())) {
-            fieldInfo = new FieldInfo(field, typeRepository.serializers.get(field.getType()), typeRepository.deserializers.get(field.getType()));
-        } else if (typeRepository.serializers.containsKey(field.getType().getSuperclass())) {
-            fieldInfo = new EnumFieldInfo(field, typeRepository.serializers.get(field.getType().getSuperclass()));
+        if (nonVolatileTypeRepository.serializerDeserializerExistsFor((field.getType()))) {
+            return new FieldInfo(field, nonVolatileTypeRepository.getSerializer(field.getType()),
+                    nonVolatileTypeRepository.getDeserializer(field.getType()));
+        } else if (field.getType().getSuperclass() == Enum.class) {
+            return new EnumFieldInfo(field, nonVolatileTypeRepository.getSerializer(Enum.class));
         } else {
             throw new UnknownRegisteredTypeException(field.getName());
         }
-        return fieldInfo;
     }
 
     private FieldInfo createVolatileField(Field field) {
-        FieldInfo fieldInfo;
-        if (typeRepository.volatileSerializers.containsKey(field.getType()) && typeRepository.volatileDeserializers.containsKey(field.getType())) {
-            fieldInfo = new FieldInfo(field, typeRepository.volatileSerializers.get(field.getType()), typeRepository.volatileDeserializers.get(field.getType()));
-        } else if (typeRepository.serializers.containsKey(field.getType().getSuperclass())) {
-            fieldInfo = new EnumVolatileFieldInfo(field, typeRepository.volatileSerializers.get(field.getType().getSuperclass()));
+        if (volatileTypeRepository.serializerDeserializerExistsFor(field.getType())) {
+            return new FieldInfo(field, volatileTypeRepository.getSerializer(field.getType()), volatileTypeRepository.getDeserializer(field.getType()));
+        } else if (field.getType().getSuperclass() == Enum.class) {
+            return new EnumVolatileFieldInfo(field, volatileTypeRepository.getSerializer(Enum.class));
         } else {
             throw new UnknownRegisteredTypeException(field.getName());
         }
-        return fieldInfo;
     }
 
     private void sortFieldInfo(FieldInfo[] infos) {
@@ -115,25 +116,31 @@ class ClassSchemaBuilder {
         return allFields;
     }
 
-    private FieldInfo[] mergeFields(FieldInfo[] fields) {
-        if (fields.length == 1 || fields.length == 0) {
+    private FieldInfo[] mergeNonVolatilePrimitiveFields(FieldInfo[] fields) {
+        if (fields.length <= 1) {
             return fields;
         }
 
-        List<FieldInfo> result = new ArrayList<>();
-        result.add(fields[0]);
-        for (int i=1; i<fields.length; i++) {
-            FieldInfo latestField = result.get(result.size() - 1);
+        List<FieldInfo> mergingResult = new ArrayList<>();
+        mergingResult.add(fields[0]);
+        for (int i = 1; i < fields.length; i++) {
+            FieldInfo previousField = mergingResult.get(mergingResult.size() - 1);
             FieldInfo currentField = fields[i];
-            if (latestField.isPrimitive() && currentField.isPrimitive() && !latestField.isVolatile() && !currentField.isVolatile()) {
-                BatchFieldInfo batchField = latestField.merge(currentField);
-                result.set(result.size() - 1, batchField);
+
+            if (isNonVolatilePrimitive(previousField) && isNonVolatilePrimitive(currentField)) {
+                BatchFieldInfo batchField = previousField.merge(currentField);
+                mergingResult.set(mergingResult.size() - 1, batchField);
             } else {
-                result.add(currentField);
+                mergingResult.add(currentField);
             }
         }
 
-        return result.toArray(new FieldInfo[result.size()]);
+        return mergingResult.toArray(new FieldInfo[mergingResult.size()]);
+    }
+
+    private boolean isNonVolatilePrimitive(FieldInfo fieldInfo) {
+        return fieldInfo.type().isPrimitive() &&
+                Modifier.isVolatile(fieldInfo.field.getModifiers());
     }
 
     /**
@@ -161,16 +168,12 @@ class ClassSchemaBuilder {
             fieldDeserializer.deserialize(unsafeMemory, object, offset);
         }
 
-        boolean isPrimitive() {
-            return field.getType().isPrimitive();
+        Class<?> type() {
+            return field.getType();
         }
 
-        boolean isVolatile() {
-            return Modifier.isVolatile(field.getModifiers());
-        }
-
-        public BatchFieldInfo merge(FieldInfo lastField) {
-            int size = (int) (lastField.offset - this.offset + typeRepository.typeSizes.get(lastField.field.getType()));
+        public BatchFieldInfo merge(FieldInfo fieldInfo) {
+            int size = (int) (fieldInfo.offset - this.offset + sizeOf(fieldInfo.type()));
             return new BatchFieldInfo(this, size);
         }
     }
@@ -187,8 +190,8 @@ class ClassSchemaBuilder {
             this.firstField = firstField;
         }
 
-        public BatchFieldInfo merge(FieldInfo lastField) {
-            int size = (int) (lastField.offset - this.offset + typeRepository.typeSizes.get(lastField.field.getType()));
+        public BatchFieldInfo merge(FieldInfo fieldInfo) {
+            int size = (int) (fieldInfo.offset - this.offset + sizeOf(fieldInfo.type()));
             return new BatchFieldInfo(firstField, size);
         }
 

@@ -404,7 +404,6 @@ class SerializationUtils {
         }
     }
 
-
     static class IntegerSerializer implements Serializer {
         @Override
         public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
