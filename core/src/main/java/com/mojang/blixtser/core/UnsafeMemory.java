@@ -405,14 +405,10 @@ public class UnsafeMemory {
         if (size >= SIZE_OF_CHAR) {
             unsafe.putChar(object, off, readChar());
             off += SIZE_OF_CHAR;
-            //size -= SIZE_OF_CHAR;
         }
-
 
         if (size % 2 > 0) {
             unsafe.putByte(object, off, readByte());
-            off += SIZE_OF_BYTE;
-            //size -= SIZE_OF_BYTE;
         }
 
     }
