@@ -1,22 +1,22 @@
 package com.mojang.blixtser.benchmark;
 
-import com.mojang.blixtser.core.UnsafeSerializer;
+import com.mojang.blixtser.core.Blixtser;
 
 public class BlixtserSerializer implements Serializer {
 
-    UnsafeSerializer unsafeSerializer = new UnsafeSerializer();
+    Blixtser blixtser = new Blixtser();
 
     public BlixtserSerializer() {
-        unsafeSerializer.register(SampleValue.class);
+        blixtser.register(SampleValue.class);
     }
 
     @Override
     public byte[] serialize(Object obj) {
-        return unsafeSerializer.serialize(obj);
+        return blixtser.serialize(obj);
     }
 
     @Override
     public Object deserialize(byte[] arr) {
-        return unsafeSerializer.deserialize(arr);
+        return blixtser.deserialize(arr);
     }
 }

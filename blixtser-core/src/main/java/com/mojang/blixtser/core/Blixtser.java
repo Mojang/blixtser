@@ -6,7 +6,7 @@ import java.util.HashSet;
 import static com.mojang.blixtser.core.ClassSchemaBuilder.*;
 
 @SuppressWarnings("all")
-public class UnsafeSerializer {
+public class Blixtser {
 
     private final UnsafeMemory unsafeMemory = new UnsafeMemory();
     private final ClassSchemaBuilder classSchemaBuilder = new ClassSchemaBuilder();
