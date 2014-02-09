@@ -26,7 +26,7 @@ class ClassSchemaBuilder {
         bigIntegerClassInfo = createClassInfo(BigInteger.class);
     }
 
-    void registerClass(Class c, Set<String> ignoreFields) {
+    void registerClass(Class<?> c, Set<String> ignoreFields) {
         ClassInfo classInfo = classInfoCache.get(c);
         if (classInfo == null) {
             classInfo = createClassInfo(c, ignoreFields);
@@ -48,7 +48,7 @@ class ClassSchemaBuilder {
                 Field field = fields.get(i);
                 fieldInfos[i] = createFieldInfo(field);
             }
-            sortFieldInfo(fieldInfos);
+            sortFieldOnOffset(fieldInfos);
             fieldInfos = mergeNonVolatilePrimitiveFields(fieldInfos);
             classInfo = new ClassInfo(c, fieldInfos);
         }
@@ -64,7 +64,7 @@ class ClassSchemaBuilder {
     }
 
     private FieldInfo createNonVolatileField(Field field) {
-        if (nonVolatileTypeRepository.serializerDeserializerExistsFor((field.getType()))) {
+        if (nonVolatileTypeRepository.serializerDeserializerExistsFor(field.getType())) {
             return new FieldInfo(field, nonVolatileTypeRepository.getSerializer(field.getType()),
                     nonVolatileTypeRepository.getDeserializer(field.getType()));
         } else if (field.getType().getSuperclass() == Enum.class) {
@@ -84,7 +84,7 @@ class ClassSchemaBuilder {
         }
     }
 
-    private void sortFieldInfo(FieldInfo[] infos) {
+    private void sortFieldOnOffset(FieldInfo[] infos) {
         Arrays.sort(infos, new Comparator<FieldInfo>() {
             @Override
             public int compare(FieldInfo o1, FieldInfo o2) {
@@ -93,7 +93,7 @@ class ClassSchemaBuilder {
         });
     }
 
-    private List<Field> getFieldsFor(Class c, Set<String> ignoreFields) {
+    private List<Field> getFieldsFor(Class<?> c, Set<String> ignoreFields) {
         List<Field> fields = new ArrayList<>();
         List<Field> ffs = getAllFieldsRecursiveFor(c);
         for (Field f : ffs) {
@@ -107,7 +107,7 @@ class ClassSchemaBuilder {
         return fields;
     }
 
-    private List<Field> getAllFieldsRecursiveFor(Class c) {
+    private List<Field> getAllFieldsRecursiveFor(Class<?> c) {
         if (c == Object.class) {
             return new ArrayList<>();
         }
@@ -240,7 +240,7 @@ class ClassSchemaBuilder {
     /**
      *
      */
-    static class EnumVolatileFieldInfo extends EnumFieldInfo {
+    final static class EnumVolatileFieldInfo extends EnumFieldInfo {
 
         EnumVolatileFieldInfo(Field field, SerializationUtils.Serializer fieldSerializer) {
             super(field, fieldSerializer);
