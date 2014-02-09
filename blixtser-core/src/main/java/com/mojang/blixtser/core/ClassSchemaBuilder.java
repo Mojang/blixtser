@@ -140,7 +140,7 @@ class ClassSchemaBuilder {
 
     private boolean isNonVolatilePrimitive(FieldInfo fieldInfo) {
         return fieldInfo.type().isPrimitive() &&
-                Modifier.isVolatile(fieldInfo.field.getModifiers());
+                !Modifier.isVolatile(fieldInfo.field.getModifiers());
     }
 
     /**
@@ -175,6 +175,15 @@ class ClassSchemaBuilder {
         public BatchFieldInfo merge(FieldInfo fieldInfo) {
             int size = (int) (fieldInfo.offset - this.offset + sizeOf(fieldInfo.type()));
             return new BatchFieldInfo(this, size);
+        }
+
+        @Override
+        public String toString() {
+            return "FieldInfo{" +
+                    "offset=" + offset +
+                    ", name=" + field.getName() +
+                    ", type=" + field.getType() +
+                    '}';
         }
     }
 
