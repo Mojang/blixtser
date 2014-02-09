@@ -1,1 +1,1 @@
-include 'core', 'benchmark'
+include 'blixtser-core', 'blixtser-benchmark'
