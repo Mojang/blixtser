@@ -23,13 +23,13 @@ then you are in big trouble!
 
 Blixtser supports the following types out of the box:
 
-- `int`, `int[]`, `Integer`, `BigInteger`
 - `long`, `long[]`, `Long`
+- `double`, `double[]`, `Double`
+- `float`, `float[]`, `Float`
+- `int`, `int[]`, `Integer`, `BigInteger`
+- `char`, `char[]`, `Character`
 - `short`, `short[]`, `Short`
 - `byte`, `byte[]`, `Byte`
-- `char`, `char[]`, `Character`
 - `boolean`, `boolean[]`, `Boolean`
-- `float`, `float[]`, `Float`
-- `double`, `double[]`, `Double`
 - `String`, `String[]`, `StringBuffer`, `StringBuilder`
 - `Enum`
