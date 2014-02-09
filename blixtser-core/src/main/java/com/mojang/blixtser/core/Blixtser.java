@@ -20,8 +20,12 @@ public class Blixtser {
 
         Class<?> c = obj.getClass();
         int code = c.hashCode();
-        unsafeMemory.writeInt(code);
 
+        if (!classInfoCache.containsKey(code)) {
+            throw new UnknownRegisteredTypeException(obj.getClass().getName());
+        }
+
+        unsafeMemory.writeInt(code);
         for (FieldInfo f : classInfoCache.get(code).fieldInfos) {
             f.serialize(unsafeMemory, obj);
         }
