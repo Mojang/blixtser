@@ -27,8 +27,14 @@ allprojects {
     group = 'com.mojang.blixtser'
     version = '1.0.0'
 
-    targetCompatibility = 1.7
-    sourceCompatibility = 1.7
+    compileJava {
+        targetCompatibility = 1.7
+        sourceCompatibility = 1.7
+        options.compilerArgs << '-nowarn'
+        options.compilerArgs << '-XDignore.symbol.file'
+        options.fork = true
+        options.forkOptions.executable = 'javac'
+    }
 
     dependencies {
         testCompile 'junit:junit:4.10'
