@@ -40,8 +40,8 @@ public abstract class TypeRepository {
      */
     static class NonVolatileTypeRepository extends TypeRepository {
 
-        private final Map<Class, Serializer> serializers = new HashMap<>(32);
-        private final Map<Class, Deserializer> deserializers = new HashMap<>(32);
+        private final Map<Class, Serializer> serializers = new HashMap<>(64);
+        private final Map<Class, Deserializer> deserializers = new HashMap<>(64);
 
         NonVolatileTypeRepository() {
             buildSerializers();
@@ -69,34 +69,42 @@ public abstract class TypeRepository {
 
             serializers.put(long.class, new LongSerializer());
             serializers.put(long[].class, new LongArraySerializer());
+            serializers.put(long[][].class, new Long2DArraySerializer());
             serializers.put(Long.class, new LongWrapperSerializer());
 
             serializers.put(short.class, new ShortSerializer());
             serializers.put(short[].class, new ShortArraySerializer());
+            serializers.put(short[][].class, new Short2DArraySerializer());
             serializers.put(Short.class, new ShortWrapperSerializer());
 
             serializers.put(byte.class, new ByteSerializer());
             serializers.put(byte[].class, new ByteArraySerializer());
+            serializers.put(byte[][].class, new Byte2DArraySerializer());
             serializers.put(Byte.class, new ByteWrapperSerializer());
 
             serializers.put(char.class, new CharSerializer());
             serializers.put(char[].class, new CharArraySerializer());
+            serializers.put(char[][].class, new Char2DArraySerializer());
             serializers.put(Character.class, new CharacterSerializer());
 
             serializers.put(boolean.class, new BooleanSerializer());
             serializers.put(boolean[].class, new BooleanArraySerializer());
+            serializers.put(boolean[][].class, new Boolean2DArraySerializer());
             serializers.put(Boolean.class, new BooleanWrapperSerializer());
 
             serializers.put(float.class, new FloatSerializer());
             serializers.put(float[].class, new FloatArraySerializer());
+            serializers.put(float[][].class, new Float2DArraySerializer());
             serializers.put(Float.class, new FloatWrapperSerializer());
 
             serializers.put(double.class, new DoubleSerializer());
             serializers.put(double[].class, new DoubleArraySerializer());
+            serializers.put(double[][].class, new Double2DArraySerializer());
             serializers.put(Double.class, new DoubleWrapperSerializer());
 
             serializers.put(String.class, new StringSerializer());
             serializers.put(String[].class, new StringArraySerializer());
+            serializers.put(String[][].class, new String2DArraySerializer());
             serializers.put(StringBuffer.class, new StringBufferSerializer());
             serializers.put(StringBuilder.class, new StringBuilderSerializer());
 
@@ -113,34 +121,42 @@ public abstract class TypeRepository {
 
             deserializers.put(long.class, new LongDeserializer());
             deserializers.put(long[].class, new LongArrayDeserializer());
+            deserializers.put(long[][].class, new Long2DArrayDeserializer());
             deserializers.put(Long.class, new LongWrapperDeserializer());
 
             deserializers.put(short.class, new ShortDeserializer());
             deserializers.put(short[].class, new ShortArrayDeserializer());
+            deserializers.put(short[][].class, new Short2DArrayDeserializer());
             deserializers.put(Short.class, new ShortWrapperDeserializer());
 
             deserializers.put(byte.class, new ByteDeserializer());
             deserializers.put(byte[].class, new ByteArrayDeserializer());
+            deserializers.put(byte[][].class, new Byte2DArrayDeserializer());
             deserializers.put(Byte.class, new ByteWrapperDeserializer());
 
             deserializers.put(char.class, new CharDeserializer());
             deserializers.put(char[].class, new CharArrayDeserializer());
+            deserializers.put(char[][].class, new Char2DArrayDeserializer());
             deserializers.put(Character.class, new CharacterDeserializer());
 
             deserializers.put(boolean.class, new BooleanDeserializer());
             deserializers.put(boolean[].class, new BooleanArrayDeserializer());
+            deserializers.put(boolean[][].class, new Boolean2DArrayDeserializer());
             deserializers.put(Boolean.class, new BooleanWrapperDeserializer());
 
             deserializers.put(float.class, new FloatDeserializer());
             deserializers.put(float[].class, new FloatArrayDeserializer());
+            deserializers.put(float[][].class, new Float2DArrayDeserializer());
             deserializers.put(Float.class, new FloatWrapperDeserializer());
 
             deserializers.put(double.class, new DoubleDeserializer());
             deserializers.put(double[].class, new DoubleArrayDeserializer());
+            deserializers.put(double[][].class, new Double2DArrayDeserializer());
             deserializers.put(Double.class, new DoubleWrapperDeserializer());
 
             deserializers.put(String.class, new StringDeserializer());
             deserializers.put(String[].class, new StringArrayDeserializer());
+            deserializers.put(String[][].class, new String2DArrayDeserializer());
             deserializers.put(StringBuffer.class, new StringBufferDeserializer());
             deserializers.put(StringBuilder.class, new StringBuilderDeserializer());
 

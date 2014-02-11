@@ -12,49 +12,9 @@ public class BlixtserTest {
     private Blixtser blixtser = new Blixtser();
 
     public BlixtserTest() {
-        blixtser.register(SerializableClass.class);
-        blixtser.register(NullClass.class);
-
-        blixtser.register(IntPrimitiveTestClass.class);
-        blixtser.register(IntNonPrimitiveTestClass.class);
-        blixtser.register(IntPrimitiveArrayTestClass.class);
-        blixtser.register(IntPrimitive2DArrayTestClass.class);
-        blixtser.register(BigIntegerTestClass.class);
-
-        blixtser.register(LongPrimitiveTestClass.class);
-        blixtser.register(LongNonPrimitiveTestClass.class);
-        blixtser.register(LongPrimitiveArrayTestClass.class);
-
-        blixtser.register(DoublePrimitiveTestClass.class);
-        blixtser.register(DoubleNonPrimitiveTestClass.class);
-        blixtser.register(DoublePrimitiveArrayTestClass.class);
-
-        blixtser.register(FloatPrimitiveTestClass.class);
-        blixtser.register(FloatNonPrimitiveTestClass.class);
-        blixtser.register(FloatPrimitiveArrayTestClass.class);
-
-        blixtser.register(CharPrimitiveTestClass.class);
-        blixtser.register(CharNonPrimitiveTestClass.class);
-        blixtser.register(CharPrimitiveArrayTestClass.class);
-
-        blixtser.register(ShortPrimitiveTestClass.class);
-        blixtser.register(ShortNonPrimitiveTestClass.class);
-        blixtser.register(ShortPrimitiveArrayTestClass.class);
-
-        blixtser.register(BytePrimitiveTestClass.class);
-        blixtser.register(ByteNonPrimitiveTestClass.class);
-        blixtser.register(BytePrimitiveArrayTestClass.class);
-
-        blixtser.register(BooleanPrimitiveTestClass.class);
-        blixtser.register(BooleanNonPrimitiveTestClass.class);
-        blixtser.register(BooleanPrimitiveArrayTestClass.class);
-
-        blixtser.register(StringTestClass.class);
-        blixtser.register(StringBuilderTestClass.class);
-        blixtser.register(StringBufferTestClass.class);
-        blixtser.register(StringArrayTestClass.class);
-
-        blixtser.register(EnumTestClass.class);
+        for (Class<?> c : TestClasses.class.getClasses()) {
+            blixtser.register(c);
+        }
     }
 
     @Test
@@ -311,9 +271,27 @@ public class BlixtserTest {
     }
 
     @Test
+    public void test_primitive_long_2d_array() {
+        long[][] a = new long[][] {new long[]{1l}, new long[]{2l, 3l, 4l, 5l, 6l}};
+        LongPrimitive2DArrayTestClass testClass = new LongPrimitive2DArrayTestClass();
+        testClass.setA(a);
+
+        testSerializationFor(testClass);
+    }
+
+    @Test
     public void test_primitive_double_array() {
         double[] a = new double[] {1.1, 2.2, 3.3, 4.4, 5.5, 6.6};
         DoublePrimitiveArrayTestClass testClass = new DoublePrimitiveArrayTestClass();
+        testClass.setA(a);
+
+        testSerializationFor(testClass);
+    }
+
+    @Test
+    public void test_primitive_double_2d_array() {
+        double[][] a = new double[][] { new double[]{1.1, 2.2, 3.3}, new double[]{4.4, 5.5, 6.6}};
+        DoublePrimitive2DArrayTestClass testClass = new DoublePrimitive2DArrayTestClass();
         testClass.setA(a);
 
         testSerializationFor(testClass);
@@ -329,9 +307,27 @@ public class BlixtserTest {
     }
 
     @Test
+    public void test_primitive_float_2d_array() {
+        float[][] a = new float[][] { new float[]{1.1f, 2.2f, 3.3f}, new float[]{4.4f, 5.5f, 6.6f}};
+        FloatPrimitive2DArrayTestClass testClass = new FloatPrimitive2DArrayTestClass();
+        testClass.setA(a);
+
+        testSerializationFor(testClass);
+    }
+
+    @Test
     public void test_primitive_char_array() {
         char[] a = new char[] {'A', 'm', 'i', 'r'};
         CharPrimitiveArrayTestClass testClass = new CharPrimitiveArrayTestClass();
+        testClass.setA(a);
+
+        testSerializationFor(testClass);
+    }
+
+    @Test
+    public void test_primitive_char_2d_array() {
+        char[][] a = new char[][] { new char[]{'A', 'm'}, new char[]{'i', 'r'}};
+        CharPrimitive2DArrayTestClass testClass = new CharPrimitive2DArrayTestClass();
         testClass.setA(a);
 
         testSerializationFor(testClass);
@@ -347,9 +343,27 @@ public class BlixtserTest {
     }
 
     @Test
+    public void test_primitive_short_2d_array() {
+        short[][] a = new short[][] { new short[]{12, 13}, new short[]{14, 15}};
+        ShortPrimitive2DArrayTestClass testClass = new ShortPrimitive2DArrayTestClass();
+        testClass.setA(a);
+
+        testSerializationFor(testClass);
+    }
+
+    @Test
     public void test_primitive_byte_array() {
         byte[] a = new byte[] {0x12, 0x13, 0x14, 0x15};
         BytePrimitiveArrayTestClass testClass = new BytePrimitiveArrayTestClass();
+        testClass.setA(a);
+
+        testSerializationFor(testClass);
+    }
+
+    @Test
+    public void test_primitive_byte_2d_array() {
+        byte[][] a = new byte[][] { new byte[]{0x12, 0x13}, new byte[]{0x14, 0x15}};
+        BytePrimitive2DArrayTestClass testClass = new BytePrimitive2DArrayTestClass();
         testClass.setA(a);
 
         testSerializationFor(testClass);
@@ -365,9 +379,31 @@ public class BlixtserTest {
     }
 
     @Test
+    public void test_primitive_boolean_2d_array() {
+        boolean[][] a = new boolean[][] { new boolean[]{false, true}, new boolean[]{false, true}};
+        BooleanPrimitive2DArrayTestClass testClass = new BooleanPrimitive2DArrayTestClass();
+        testClass.setA(a);
+
+        testSerializationFor(testClass);
+    }
+
+    @Test
     public void test_string_array() {
         String[] a = new String[] {"Ämir", "Daniel"};
         StringArrayTestClass testClass = new StringArrayTestClass();
+        testClass.setA(a);
+
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+
+        testSerializationFor(testClass);
+    }
+
+    @Test
+    public void test_string_2d_array() {
+        String[][] a = new String[][] { new String[]{"Ämir", "Moulavi", null}, null, new String[]{"Daniel", "Frisk"}};
+        String2DArrayTestClass testClass = new String2DArrayTestClass();
         testClass.setA(a);
 
         testSerializationFor(testClass);

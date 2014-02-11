@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 public class TestClasses {
 
@@ -63,6 +64,12 @@ public class TestClasses {
         private long[] a;
     }
 
+    @Data
+    @EqualsAndHashCode
+    public static class LongPrimitive2DArrayTestClass {
+        private long[][] a;
+    }
+
     /**
      *  Doubles
      */
@@ -83,6 +90,12 @@ public class TestClasses {
     @EqualsAndHashCode
     public static class DoublePrimitiveArrayTestClass {
         private double[] a;
+    }
+
+    @Data
+    @EqualsAndHashCode
+    public static class DoublePrimitive2DArrayTestClass {
+        private double[][] a;
     }
 
     /**
@@ -107,6 +120,12 @@ public class TestClasses {
         private float[] a;
     }
 
+    @Data
+    @EqualsAndHashCode
+    public static class FloatPrimitive2DArrayTestClass {
+        private float[][] a;
+    }
+
     /**
      *  Char
      */
@@ -127,6 +146,12 @@ public class TestClasses {
     @EqualsAndHashCode
     public static class CharPrimitiveArrayTestClass {
         private char[] a;
+    }
+
+    @Data
+    @EqualsAndHashCode
+    public static class CharPrimitive2DArrayTestClass {
+        private char[][] a;
     }
 
     /**
@@ -151,6 +176,12 @@ public class TestClasses {
         private short[] a;
     }
 
+    @Data
+    @EqualsAndHashCode
+    public static class ShortPrimitive2DArrayTestClass {
+        private short[][] a;
+    }
+
     /**
      *  Byte
      */
@@ -173,6 +204,12 @@ public class TestClasses {
         private byte[] a;
     }
 
+    @Data
+    @EqualsAndHashCode
+    public static class BytePrimitive2DArrayTestClass {
+        private byte[][] a;
+    }
+
     /**
      *  Boolean
      */
@@ -193,6 +230,12 @@ public class TestClasses {
     @EqualsAndHashCode
     public static class BooleanPrimitiveArrayTestClass {
         private boolean[] a;
+    }
+
+    @Data
+    @EqualsAndHashCode
+    public static class BooleanPrimitive2DArrayTestClass {
+        private boolean[][] a;
     }
 
     /**
@@ -254,6 +297,12 @@ public class TestClasses {
         private String[] a;
     }
 
+    @Data
+    @EqualsAndHashCode
+    public static class String2DArrayTestClass {
+        private String[][] a;
+    }
+
     /**
      *  Enums
      */
@@ -269,5 +318,129 @@ public class TestClasses {
             C
         }
     }
+
+    /**
+     *
+     */
+    public static class NullClass {
+
+        String aString;
+        StringBuffer aStringBuffer;
+        String[] aStringArray = new String[10];
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof NullClass)) return false;
+
+            NullClass nullClass = (NullClass) o;
+
+            if (aString == null && nullClass.aString == null)
+                return true;
+
+            if (aStringBuffer == null && nullClass.aStringBuffer == null)
+                return true;
+
+            if (aStringArray == null && nullClass.aStringArray == null)
+                return true;
+
+            if (aString != null ? !aString.equals(nullClass.aString) : nullClass.aString != null) return false;
+
+            if (aStringBuffer != null ? !aStringBuffer.toString().equals(nullClass.aStringBuffer.toString()) : nullClass.aStringBuffer != null) return false;
+
+            if (aStringArray.length != nullClass.aStringArray.length) return false;
+
+            for (int i=0; i<aStringArray.length; i++) {
+                if (!aStringArray[i].equals(nullClass.aStringArray[i])) return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return aString != null ? aString.hashCode() : 0;
+        }
+    }
+
+    /**
+     *
+     */
+    public static class SerializableClass extends SuperClass {
+
+        private int anInt;
+        private String aString;
+        private Long aWrapperLong;
+        private StringBuffer aStringBuffer;
+        private StringBuilder aStringBuilder;
+        private String[] aStringArray;
+        private volatile Weekdays day;
+        private BigInteger aBigInteger;
+
+        public static SerializableClass createAnObject() {
+            SerializableClass serializableClass = new SerializableClass();
+            serializableClass.someInt = 10;
+            serializableClass.anInt = 100;
+            serializableClass.aString = "Ämir & Daniel";
+            serializableClass.aWrapperLong = 2L;
+            serializableClass.aBigInteger = new BigInteger("13231234353945873458998734598729879879872348723487234");
+            serializableClass.aStringBuffer = new StringBuffer(serializableClass.aString);
+            serializableClass.aStringBuilder = new StringBuilder(serializableClass.aString);
+            serializableClass.aStringArray = new String[4];
+            for (int i = 0; i < 4; i++) {
+                serializableClass.aStringArray[i] = serializableClass.aString;
+            }
+            serializableClass.day = Weekdays.FRIDAY;
+
+            return serializableClass;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof SerializableClass)) return false;
+
+            SerializableClass that = (SerializableClass) o;
+
+            if (day != that.day) return false;
+            if (anInt != that.anInt) return false;
+            if (!aBigInteger.equals(that.aBigInteger)) return false;
+            if (aString != null ? !aString.equals(that.aString) : that.aString != null) return false;
+            if (!Arrays.equals(aStringArray, that.aStringArray)) return false;
+            if (aStringBuffer != null ? !aStringBuffer.toString().equals(that.aStringBuffer.toString()) : that.aStringBuffer != null)
+                return false;
+
+            if (aStringBuilder != null ? !aStringBuilder.toString().equals(that.aStringBuilder.toString()) : that.aStringBuilder != null)
+                return false;
+
+            if (aWrapperLong != null ? !aWrapperLong.equals(that.aWrapperLong) : that.aWrapperLong != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + anInt;
+            result = 31 * result + (aString != null ? aString.hashCode() : 0);
+            result = 31 * result + (aWrapperLong != null ? aWrapperLong.hashCode() : 0);
+            result = 31 * result + (aStringBuffer != null ? aStringBuffer.hashCode() : 0);
+            result = 31 * result + (aStringBuilder != null ? aStringBuilder.hashCode() : 0);
+            result = 31 * result + (aStringArray != null ? Arrays.hashCode(aStringArray) : 0);
+            return result;
+        }
+
+        public enum Weekdays {
+            SATURDAY,
+            SUNDAY,
+            MONDAY,
+            TUESDAY,
+            WEDNESDAY,
+            THURSDAY,
+            FRIDAY
+        }
+    }
+
+
 
 }

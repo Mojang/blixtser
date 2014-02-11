@@ -70,7 +70,7 @@ class ClassSchemaBuilder {
         } else if (field.getType().getSuperclass() == Enum.class) {
             return new EnumFieldInfo(field, nonVolatileTypeRepository.getSerializer(Enum.class));
         } else {
-            throw new UnknownRegisteredTypeException(field.getName());
+            throw new UnknownRegisteredTypeException(field.getName(), field.getType().getName());
         }
     }
 
@@ -80,7 +80,7 @@ class ClassSchemaBuilder {
         } else if (field.getType().getSuperclass() == Enum.class) {
             return new EnumVolatileFieldInfo(field, volatileTypeRepository.getSerializer(Enum.class));
         } else {
-            throw new UnknownRegisteredTypeException(field.getName());
+            throw new UnknownRegisteredTypeException(field.getName(), field.getType().getName());
         }
     }
 

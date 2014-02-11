@@ -674,6 +674,131 @@ class SerializationUtils {
         }
     }
 
+    static class Long2DArraySerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            long[][] longs = (long[][]) unsafe.getObject(object, offset);
+            unsafeMemory.writeInt(longs.length);
+            for (long[] aLong : longs) {
+                unsafeMemory.writeLongArray(aLong);
+            }
+        }
+    }
+
+    static class Double2DArraySerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            double[][] doubles = (double[][]) unsafe.getObject(object, offset);
+            unsafeMemory.writeInt(doubles.length);
+            for (double[] aDouble : doubles) {
+                unsafeMemory.writeDoubleArray(aDouble);
+            }
+        }
+    }
+
+    static class Float2DArraySerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            float[][] floats = (float[][]) unsafe.getObject(object, offset);
+            unsafeMemory.writeInt(floats.length);
+            for (float[] aFloat : floats) {
+                unsafeMemory.writeFloatArray(aFloat);
+            }
+        }
+    }
+
+    static class Short2DArraySerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            short[][] shorts = (short[][]) unsafe.getObject(object, offset);
+            unsafeMemory.writeInt(shorts.length);
+            for (short[] aShort : shorts) {
+                unsafeMemory.writeShortArray(aShort);
+            }
+        }
+    }
+
+    static class Char2DArraySerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            char[][] chars = (char[][]) unsafe.getObject(object, offset);
+            unsafeMemory.writeInt(chars.length);
+            for (char[] aChar : chars) {
+                unsafeMemory.writeCharArray(aChar);
+            }
+        }
+    }
+
+    static class String2DArraySerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            String[][] strings_2d = (String[][]) unsafe.getObject(object, offset);
+            if (writeNullableObject(unsafeMemory, strings_2d)) {
+                return;
+            }
+            unsafeMemory.writeInt(strings_2d.length);
+            for (String[] stringArray : strings_2d) {
+                if (writeNullableObject(unsafeMemory, stringArray)) {
+                    continue;
+                }
+                unsafeMemory.writeInt(stringArray.length);
+                for (String value : stringArray) {
+                    if (!writeNullableObject(unsafeMemory, value)) {
+                        unsafeMemory.writeString(value);
+                    }
+                }
+
+            }
+
+        }
+    }
+
+    static class String2DArrayDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            if (readNullableObject(unsafeMemory)) {
+                return;
+            }
+            String[][] strings_2d = new String[unsafeMemory.readInt()][];
+            for (int i = 0; i < strings_2d.length; i++) {
+                if (readNullableObject(unsafeMemory)) {
+                    continue;
+                }
+                strings_2d[i] = new String[unsafeMemory.readInt()];
+                for (int j = 0; j < strings_2d[i].length; j++) {
+                    if (!readNullableObject(unsafeMemory)) {
+                        strings_2d[i][j] = unsafeMemory.readString();
+                    }
+                }
+
+            }
+            unsafe.putObject(object, offset, strings_2d);
+
+        }
+    }
+
+    static class Byte2DArraySerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            byte[][] bytes = (byte[][]) unsafe.getObject(object, offset);
+            unsafeMemory.writeInt(bytes.length);
+            for (byte[] aByte : bytes) {
+                unsafeMemory.writeByteArray(aByte);
+            }
+        }
+    }
+
+    static class Boolean2DArraySerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            boolean[][] booleans = (boolean[][]) unsafe.getObject(object, offset);
+            unsafeMemory.writeInt(booleans.length);
+            for (boolean[] aBoolean : booleans) {
+                unsafeMemory.writeBooleanArray(aBoolean);
+            }
+        }
+    }
+
     static class IntArrayVolatileSerializer implements Serializer {
         @Override
         public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
@@ -692,10 +817,88 @@ class SerializationUtils {
         @Override
         public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
             int[][] ints_2d = new int[unsafeMemory.readInt()][];
-            for (int i=0; i < ints_2d.length; i++) {
+            for (int i = 0; i < ints_2d.length; i++) {
                 ints_2d[i] = unsafeMemory.readIntArray();
             }
             unsafe.putObject(object, offset, ints_2d);
+        }
+    }
+
+    static class Long2DArrayDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            long[][] longs_2d = new long[unsafeMemory.readInt()][];
+            for (int i = 0; i < longs_2d.length; i++) {
+                longs_2d[i] = unsafeMemory.readLongArray();
+            }
+            unsafe.putObject(object, offset, longs_2d);
+        }
+    }
+
+    static class Double2DArrayDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            double[][] doubles_2d = new double[unsafeMemory.readInt()][];
+            for (int i = 0; i < doubles_2d.length; i++) {
+                doubles_2d[i] = unsafeMemory.readDoubleArray();
+            }
+            unsafe.putObject(object, offset, doubles_2d);
+        }
+    }
+
+    static class Float2DArrayDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            float[][] floats_2d = new float[unsafeMemory.readInt()][];
+            for (int i = 0; i < floats_2d.length; i++) {
+                floats_2d[i] = unsafeMemory.readFloatArray();
+            }
+            unsafe.putObject(object, offset, floats_2d);
+        }
+    }
+
+    static class Short2DArrayDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            short[][] shorts_2d = new short[unsafeMemory.readInt()][];
+            for (int i = 0; i < shorts_2d.length; i++) {
+                shorts_2d[i] = unsafeMemory.readShortArray();
+            }
+            unsafe.putObject(object, offset, shorts_2d);
+        }
+    }
+
+    static class Char2DArrayDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            char[][] chars_2d = new char[unsafeMemory.readInt()][];
+            for (int i = 0; i < chars_2d.length; i++) {
+                chars_2d[i] = unsafeMemory.readCharArray();
+            }
+            unsafe.putObject(object, offset, chars_2d);
+        }
+    }
+
+
+    static class Byte2DArrayDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            byte[][] bytes_2d = new byte[unsafeMemory.readInt()][];
+            for (int i = 0; i < bytes_2d.length; i++) {
+                bytes_2d[i] = unsafeMemory.readByteArray();
+            }
+            unsafe.putObject(object, offset, bytes_2d);
+        }
+    }
+
+    static class Boolean2DArrayDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            boolean[][] booleans_2d = new boolean[unsafeMemory.readInt()][];
+            for (int i = 0; i < booleans_2d.length; i++) {
+                booleans_2d[i] = unsafeMemory.readBooleanArray();
+            }
+            unsafe.putObject(object, offset, booleans_2d);
         }
     }
 
@@ -944,7 +1147,8 @@ class SerializationUtils {
         }
     }
 
-    static class EnumVolatileSerializer extends EnumSerializer {}
+    static class EnumVolatileSerializer extends EnumSerializer {
+    }
 
     static class BigIntegerSerializer implements Serializer {
         @Override
