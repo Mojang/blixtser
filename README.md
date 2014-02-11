@@ -17,7 +17,15 @@ then you are in big trouble!
 
 ## Quickstart
 
-//TODO
+Let's start by checking how to use the library:
+
+```java
+Blixtser blixtser = new Blixtser();
+blixtser.register(SomeClass.class);
+// ...
+byte[] serialized = blixtser.serialize(someclass);
+SomeClass deserialized = (SomeClass) blixtser.deserialize(serialized);
+```
 
 ## Supported Types
 
