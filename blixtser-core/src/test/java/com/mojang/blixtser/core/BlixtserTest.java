@@ -18,6 +18,7 @@ public class BlixtserTest {
         blixtser.register(IntPrimitiveTestClass.class);
         blixtser.register(IntNonPrimitiveTestClass.class);
         blixtser.register(IntPrimitiveArrayTestClass.class);
+        blixtser.register(IntPrimitive2DArrayTestClass.class);
         blixtser.register(BigIntegerTestClass.class);
 
         blixtser.register(LongPrimitiveTestClass.class);
@@ -286,6 +287,15 @@ public class BlixtserTest {
     public void test_primitive_int_array() {
         int[] a = new int[] {1, 2, 3, 4, 5, 6};
         IntPrimitiveArrayTestClass testClass = new IntPrimitiveArrayTestClass();
+        testClass.setA(a);
+
+        testSerializationFor(testClass);
+    }
+
+    @Test
+    public void test_primitive_int_2d_array() {
+        int[][] a = new int[][] { new int[]{1, 2}, new int[]{3, 4}, new int[]{5, 6} };
+        IntPrimitive2DArrayTestClass testClass = new IntPrimitive2DArrayTestClass();
         testClass.setA(a);
 
         testSerializationFor(testClass);

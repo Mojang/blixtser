@@ -61,86 +61,88 @@ public abstract class TypeRepository {
         }
 
         private void buildSerializers() {
-            serializers.put(int.class, new SerializationUtils.IntSerializer());
-            serializers.put(int[].class, new SerializationUtils.IntArraySerializer());
-            serializers.put(Integer.class, new SerializationUtils.IntegerSerializer());
-            serializers.put(BigInteger.class, new SerializationUtils.BigIntegerSerializer());
+            serializers.put(int.class, new IntSerializer());
+            serializers.put(int[].class, new IntArraySerializer());
+            serializers.put(int[][].class, new Int2DArraySerializer());
+            serializers.put(Integer.class, new IntegerSerializer());
+            serializers.put(BigInteger.class, new BigIntegerSerializer());
 
-            serializers.put(long.class, new SerializationUtils.LongSerializer());
-            serializers.put(long[].class, new SerializationUtils.LongArraySerializer());
-            serializers.put(Long.class, new SerializationUtils.LongWrapperSerializer());
+            serializers.put(long.class, new LongSerializer());
+            serializers.put(long[].class, new LongArraySerializer());
+            serializers.put(Long.class, new LongWrapperSerializer());
 
-            serializers.put(short.class, new SerializationUtils.ShortSerializer());
-            serializers.put(short[].class, new SerializationUtils.ShortArraySerializer());
-            serializers.put(Short.class, new SerializationUtils.ShortWrapperSerializer());
+            serializers.put(short.class, new ShortSerializer());
+            serializers.put(short[].class, new ShortArraySerializer());
+            serializers.put(Short.class, new ShortWrapperSerializer());
 
-            serializers.put(byte.class, new SerializationUtils.ByteSerializer());
-            serializers.put(byte[].class, new SerializationUtils.ByteArraySerializer());
-            serializers.put(Byte.class, new SerializationUtils.ByteWrapperSerializer());
+            serializers.put(byte.class, new ByteSerializer());
+            serializers.put(byte[].class, new ByteArraySerializer());
+            serializers.put(Byte.class, new ByteWrapperSerializer());
 
-            serializers.put(char.class, new SerializationUtils.CharSerializer());
-            serializers.put(char[].class, new SerializationUtils.CharArraySerializer());
-            serializers.put(Character.class, new SerializationUtils.CharacterSerializer());
+            serializers.put(char.class, new CharSerializer());
+            serializers.put(char[].class, new CharArraySerializer());
+            serializers.put(Character.class, new CharacterSerializer());
 
-            serializers.put(boolean.class, new SerializationUtils.BooleanSerializer());
-            serializers.put(boolean[].class, new SerializationUtils.BooleanArraySerializer());
-            serializers.put(Boolean.class, new SerializationUtils.BooleanWrapperSerializer());
+            serializers.put(boolean.class, new BooleanSerializer());
+            serializers.put(boolean[].class, new BooleanArraySerializer());
+            serializers.put(Boolean.class, new BooleanWrapperSerializer());
 
-            serializers.put(float.class, new SerializationUtils.FloatSerializer());
-            serializers.put(float[].class, new SerializationUtils.FloatArraySerializer());
-            serializers.put(Float.class, new SerializationUtils.FloatWrapperSerializer());
+            serializers.put(float.class, new FloatSerializer());
+            serializers.put(float[].class, new FloatArraySerializer());
+            serializers.put(Float.class, new FloatWrapperSerializer());
 
-            serializers.put(double.class, new SerializationUtils.DoubleSerializer());
-            serializers.put(double[].class, new SerializationUtils.DoubleArraySerializer());
-            serializers.put(Double.class, new SerializationUtils.DoubleWrapperSerializer());
+            serializers.put(double.class, new DoubleSerializer());
+            serializers.put(double[].class, new DoubleArraySerializer());
+            serializers.put(Double.class, new DoubleWrapperSerializer());
 
-            serializers.put(String.class, new SerializationUtils.StringSerializer());
-            serializers.put(String[].class, new SerializationUtils.StringArraySerializer());
-            serializers.put(StringBuffer.class, new SerializationUtils.StringBufferSerializer());
-            serializers.put(StringBuilder.class, new SerializationUtils.StringBuilderSerializer());
+            serializers.put(String.class, new StringSerializer());
+            serializers.put(String[].class, new StringArraySerializer());
+            serializers.put(StringBuffer.class, new StringBufferSerializer());
+            serializers.put(StringBuilder.class, new StringBuilderSerializer());
 
-            serializers.put(Enum.class, new SerializationUtils.EnumSerializer());
+            serializers.put(Enum.class, new EnumSerializer());
         }
 
 
         private void buildDeserializers() {
-            deserializers.put(int.class, new SerializationUtils.IntDeserializer());
-            deserializers.put(int[].class, new SerializationUtils.IntArrayDeserializer());
-            deserializers.put(Integer.class, new SerializationUtils.IntegerDeserializer());
-            deserializers.put(BigInteger.class, new SerializationUtils.BigIntegerDeserializer());
+            deserializers.put(int.class, new IntDeserializer());
+            deserializers.put(int[].class, new IntArrayDeserializer());
+            deserializers.put(int[][].class, new Int2DArrayDeserializer());
+            deserializers.put(Integer.class, new IntegerDeserializer());
+            deserializers.put(BigInteger.class, new BigIntegerDeserializer());
 
-            deserializers.put(long.class, new SerializationUtils.LongDeserializer());
-            deserializers.put(long[].class, new SerializationUtils.LongArrayDeserializer());
-            deserializers.put(Long.class, new SerializationUtils.LongWrapperDeserializer());
+            deserializers.put(long.class, new LongDeserializer());
+            deserializers.put(long[].class, new LongArrayDeserializer());
+            deserializers.put(Long.class, new LongWrapperDeserializer());
 
-            deserializers.put(short.class, new SerializationUtils.ShortDeserializer());
-            deserializers.put(short[].class, new SerializationUtils.ShortArrayDeserializer());
-            deserializers.put(Short.class, new SerializationUtils.ShortWrapperDeserializer());
+            deserializers.put(short.class, new ShortDeserializer());
+            deserializers.put(short[].class, new ShortArrayDeserializer());
+            deserializers.put(Short.class, new ShortWrapperDeserializer());
 
-            deserializers.put(byte.class, new SerializationUtils.ByteDeserializer());
-            deserializers.put(byte[].class, new SerializationUtils.ByteArrayDeserializer());
-            deserializers.put(Byte.class, new SerializationUtils.ByteWrapperDeserializer());
+            deserializers.put(byte.class, new ByteDeserializer());
+            deserializers.put(byte[].class, new ByteArrayDeserializer());
+            deserializers.put(Byte.class, new ByteWrapperDeserializer());
 
-            deserializers.put(char.class, new SerializationUtils.CharDeserializer());
-            deserializers.put(char[].class, new SerializationUtils.CharArrayDeserializer());
-            deserializers.put(Character.class, new SerializationUtils.CharacterDeserializer());
+            deserializers.put(char.class, new CharDeserializer());
+            deserializers.put(char[].class, new CharArrayDeserializer());
+            deserializers.put(Character.class, new CharacterDeserializer());
 
-            deserializers.put(boolean.class, new SerializationUtils.BooleanDeserializer());
-            deserializers.put(boolean[].class, new SerializationUtils.BooleanArrayDeserializer());
-            deserializers.put(Boolean.class, new SerializationUtils.BooleanWrapperDeserializer());
+            deserializers.put(boolean.class, new BooleanDeserializer());
+            deserializers.put(boolean[].class, new BooleanArrayDeserializer());
+            deserializers.put(Boolean.class, new BooleanWrapperDeserializer());
 
-            deserializers.put(float.class, new SerializationUtils.FloatDeserializer());
-            deserializers.put(float[].class, new SerializationUtils.FloatArrayDeserializer());
-            deserializers.put(Float.class, new SerializationUtils.FloatWrapperDeserializer());
+            deserializers.put(float.class, new FloatDeserializer());
+            deserializers.put(float[].class, new FloatArrayDeserializer());
+            deserializers.put(Float.class, new FloatWrapperDeserializer());
 
-            deserializers.put(double.class, new SerializationUtils.DoubleDeserializer());
-            deserializers.put(double[].class, new SerializationUtils.DoubleArrayDeserializer());
-            deserializers.put(Double.class, new SerializationUtils.DoubleWrapperDeserializer());
+            deserializers.put(double.class, new DoubleDeserializer());
+            deserializers.put(double[].class, new DoubleArrayDeserializer());
+            deserializers.put(Double.class, new DoubleWrapperDeserializer());
 
-            deserializers.put(String.class, new SerializationUtils.StringDeserializer());
-            deserializers.put(String[].class, new SerializationUtils.StringArrayDeserializer());
-            deserializers.put(StringBuffer.class, new SerializationUtils.StringBufferDeserializer());
-            deserializers.put(StringBuilder.class, new SerializationUtils.StringBuilderDeserializer());
+            deserializers.put(String.class, new StringDeserializer());
+            deserializers.put(String[].class, new StringArrayDeserializer());
+            deserializers.put(StringBuffer.class, new StringBufferDeserializer());
+            deserializers.put(StringBuilder.class, new StringBuilderDeserializer());
 
         }
 
@@ -176,85 +178,85 @@ public abstract class TypeRepository {
         }
 
         private void buildVolatileSerializers() {
-            serializers.put(int.class, new SerializationUtils.IntVolatileSerializer());
-            serializers.put(int[].class, new SerializationUtils.IntArrayVolatileSerializer());
-            serializers.put(Integer.class, new SerializationUtils.IntegerVolatileSerializer());
-            serializers.put(BigInteger.class, new SerializationUtils.BigIntegerVolatileSerializer());
+            serializers.put(int.class, new IntVolatileSerializer());
+            serializers.put(int[].class, new IntArrayVolatileSerializer());
+            serializers.put(Integer.class, new IntegerVolatileSerializer());
+            serializers.put(BigInteger.class, new BigIntegerVolatileSerializer());
 
-            serializers.put(long.class, new SerializationUtils.LongVolatileSerializer());
-            serializers.put(long[].class, new SerializationUtils.LongArrayVolatileSerializer());
-            serializers.put(Long.class, new SerializationUtils.LongWrapperVolatileSerializer());
+            serializers.put(long.class, new LongVolatileSerializer());
+            serializers.put(long[].class, new LongArrayVolatileSerializer());
+            serializers.put(Long.class, new LongWrapperVolatileSerializer());
 
-            serializers.put(short.class, new SerializationUtils.ShortVolatileSerializer());
-            serializers.put(short[].class, new SerializationUtils.ShortArrayVolatileSerializer());
-            serializers.put(Short.class, new SerializationUtils.ShortWrapperVolatileSerializer());
+            serializers.put(short.class, new ShortVolatileSerializer());
+            serializers.put(short[].class, new ShortArrayVolatileSerializer());
+            serializers.put(Short.class, new ShortWrapperVolatileSerializer());
 
-            serializers.put(byte.class, new SerializationUtils.ByteVolatileSerializer());
-            serializers.put(byte[].class, new SerializationUtils.ByteArrayVolatileSerializer());
-            serializers.put(Byte.class, new SerializationUtils.ByteWrapperVolatileSerializer());
+            serializers.put(byte.class, new ByteVolatileSerializer());
+            serializers.put(byte[].class, new ByteArrayVolatileSerializer());
+            serializers.put(Byte.class, new ByteWrapperVolatileSerializer());
 
-            serializers.put(char.class, new SerializationUtils.CharVolatileSerializer());
-            serializers.put(char[].class, new SerializationUtils.CharArrayVolatileSerializer());
-            serializers.put(Character.class, new SerializationUtils.CharacterVolatileSerializer());
+            serializers.put(char.class, new CharVolatileSerializer());
+            serializers.put(char[].class, new CharArrayVolatileSerializer());
+            serializers.put(Character.class, new CharacterVolatileSerializer());
 
-            serializers.put(boolean.class, new SerializationUtils.BooleanVolatileSerializer());
-            serializers.put(boolean[].class, new SerializationUtils.BooleanArrayVolatileSerializer());
-            serializers.put(Boolean.class, new SerializationUtils.BooleanWrapperVolatileSerializer());
+            serializers.put(boolean.class, new BooleanVolatileSerializer());
+            serializers.put(boolean[].class, new BooleanArrayVolatileSerializer());
+            serializers.put(Boolean.class, new BooleanWrapperVolatileSerializer());
 
-            serializers.put(float.class, new SerializationUtils.FloatVolatileSerializer());
-            serializers.put(float[].class, new SerializationUtils.FloatArrayVolatileSerializer());
-            serializers.put(Float.class, new SerializationUtils.FloatWrapperVolatileSerializer());
+            serializers.put(float.class, new FloatVolatileSerializer());
+            serializers.put(float[].class, new FloatArrayVolatileSerializer());
+            serializers.put(Float.class, new FloatWrapperVolatileSerializer());
 
-            serializers.put(double.class, new SerializationUtils.DoubleVolatileSerializer());
-            serializers.put(double[].class, new SerializationUtils.DoubleArrayVolatileSerializer());
-            serializers.put(Double.class, new SerializationUtils.DoubleWrapperVolatileSerializer());
+            serializers.put(double.class, new DoubleVolatileSerializer());
+            serializers.put(double[].class, new DoubleArrayVolatileSerializer());
+            serializers.put(Double.class, new DoubleWrapperVolatileSerializer());
 
-            serializers.put(String.class, new SerializationUtils.StringVolatileSerializer());
-            serializers.put(String[].class, new SerializationUtils.StringArrayVolatileSerializer());
-            serializers.put(StringBuffer.class, new SerializationUtils.StringBufferVolatileSerializer());
-            serializers.put(StringBuilder.class, new SerializationUtils.StringBuilderVolatileSerializer());
+            serializers.put(String.class, new StringVolatileSerializer());
+            serializers.put(String[].class, new StringArrayVolatileSerializer());
+            serializers.put(StringBuffer.class, new StringBufferVolatileSerializer());
+            serializers.put(StringBuilder.class, new StringBuilderVolatileSerializer());
 
-            serializers.put(Enum.class, new SerializationUtils.EnumVolatileSerializer());
+            serializers.put(Enum.class, new EnumVolatileSerializer());
         }
 
         private void buildVolatileDeserializers() {
-            deserializers.put(int.class, new SerializationUtils.IntVolatileDeserializer());
-            deserializers.put(int[].class, new SerializationUtils.IntArrayVolatileDeserializer());
-            deserializers.put(Integer.class, new SerializationUtils.IntegerVolatileDeserializer());
-            deserializers.put(BigInteger.class, new SerializationUtils.BigIntegerVolatileDeserializer());
+            deserializers.put(int.class, new IntVolatileDeserializer());
+            deserializers.put(int[].class, new IntArrayVolatileDeserializer());
+            deserializers.put(Integer.class, new IntegerVolatileDeserializer());
+            deserializers.put(BigInteger.class, new BigIntegerVolatileDeserializer());
 
-            deserializers.put(long.class, new SerializationUtils.LongVolatileDeserializer());
-            deserializers.put(long[].class, new SerializationUtils.LongArrayVolatileDeserializer());
-            deserializers.put(Long.class, new SerializationUtils.LongWrapperVolatileDeserializer());
+            deserializers.put(long.class, new LongVolatileDeserializer());
+            deserializers.put(long[].class, new LongArrayVolatileDeserializer());
+            deserializers.put(Long.class, new LongWrapperVolatileDeserializer());
 
-            deserializers.put(short.class, new SerializationUtils.ShortVolatileDeserializer());
-            deserializers.put(short[].class, new SerializationUtils.ShortArrayVolatileDeserializer());
-            deserializers.put(Short.class, new SerializationUtils.ShortWrapperVolatileDeserializer());
+            deserializers.put(short.class, new ShortVolatileDeserializer());
+            deserializers.put(short[].class, new ShortArrayVolatileDeserializer());
+            deserializers.put(Short.class, new ShortWrapperVolatileDeserializer());
 
-            deserializers.put(byte.class, new SerializationUtils.ByteVolatileDeserializer());
-            deserializers.put(byte[].class, new SerializationUtils.ByteArrayVolatileDeserializer());
-            deserializers.put(Byte.class, new SerializationUtils.ByteWrapperVolatileDeserializer());
+            deserializers.put(byte.class, new ByteVolatileDeserializer());
+            deserializers.put(byte[].class, new ByteArrayVolatileDeserializer());
+            deserializers.put(Byte.class, new ByteWrapperVolatileDeserializer());
 
-            deserializers.put(char.class, new SerializationUtils.CharVolatileDeserializer());
-            deserializers.put(char[].class, new SerializationUtils.CharArrayVolatileDeserializer());
-            deserializers.put(Character.class, new SerializationUtils.CharacterVolatileDeserializer());
+            deserializers.put(char.class, new CharVolatileDeserializer());
+            deserializers.put(char[].class, new CharArrayVolatileDeserializer());
+            deserializers.put(Character.class, new CharacterVolatileDeserializer());
 
-            deserializers.put(boolean.class, new SerializationUtils.BooleanVolatileDeserializer());
-            deserializers.put(boolean[].class, new SerializationUtils.BooleanArrayVolatileDeserializer());
-            deserializers.put(Boolean.class, new SerializationUtils.BooleanWrapperVolatileDeserializer());
+            deserializers.put(boolean.class, new BooleanVolatileDeserializer());
+            deserializers.put(boolean[].class, new BooleanArrayVolatileDeserializer());
+            deserializers.put(Boolean.class, new BooleanWrapperVolatileDeserializer());
 
-            deserializers.put(float.class, new SerializationUtils.FloatVolatileDeserializer());
-            deserializers.put(float[].class, new SerializationUtils.FloatArrayVolatileDeserializer());
-            deserializers.put(Float.class, new SerializationUtils.FloatWrapperVolatileDeserializer());
+            deserializers.put(float.class, new FloatVolatileDeserializer());
+            deserializers.put(float[].class, new FloatArrayVolatileDeserializer());
+            deserializers.put(Float.class, new FloatWrapperVolatileDeserializer());
 
-            deserializers.put(double.class, new SerializationUtils.DoubleVolatileDeserializer());
-            deserializers.put(double[].class, new SerializationUtils.DoubleArrayVolatileDeserializer());
-            deserializers.put(Double.class, new SerializationUtils.DoubleWrapperVolatileDeserializer());
+            deserializers.put(double.class, new DoubleVolatileDeserializer());
+            deserializers.put(double[].class, new DoubleArrayVolatileDeserializer());
+            deserializers.put(Double.class, new DoubleWrapperVolatileDeserializer());
 
-            deserializers.put(String.class, new SerializationUtils.StringVolatileDeserializer());
-            deserializers.put(String[].class, new SerializationUtils.StringArrayVolatileDeserializer());
-            deserializers.put(StringBuffer.class, new SerializationUtils.StringBufferVolatileDeserializer());
-            deserializers.put(StringBuilder.class, new SerializationUtils.StringBuilderVolatileDeserializer());
+            deserializers.put(String.class, new StringVolatileDeserializer());
+            deserializers.put(String[].class, new StringArrayVolatileDeserializer());
+            deserializers.put(StringBuffer.class, new StringBufferVolatileDeserializer());
+            deserializers.put(StringBuilder.class, new StringBuilderVolatileDeserializer());
 
         }
 

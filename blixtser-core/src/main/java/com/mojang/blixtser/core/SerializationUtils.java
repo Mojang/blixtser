@@ -663,6 +663,17 @@ class SerializationUtils {
         }
     }
 
+    static class Int2DArraySerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            int[][] ints = (int[][]) unsafe.getObject(object, offset);
+            unsafeMemory.writeInt(ints.length);
+            for (int[] anInt : ints) {
+                unsafeMemory.writeIntArray(anInt);
+            }
+        }
+    }
+
     static class IntArrayVolatileSerializer implements Serializer {
         @Override
         public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
@@ -674,6 +685,17 @@ class SerializationUtils {
         @Override
         public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
             unsafe.putObject(object, offset, unsafeMemory.readIntArray());
+        }
+    }
+
+    static class Int2DArrayDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            int[][] ints_2d = new int[unsafeMemory.readInt()][];
+            for (int i=0; i < ints_2d.length; i++) {
+                ints_2d[i] = unsafeMemory.readIntArray();
+            }
+            unsafe.putObject(object, offset, ints_2d);
         }
     }
 

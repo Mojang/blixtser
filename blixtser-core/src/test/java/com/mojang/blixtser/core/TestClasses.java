@@ -31,6 +31,12 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    public static class IntPrimitive2DArrayTestClass {
+        private int[][] a;
+    }
+
+    @Data
+    @EqualsAndHashCode
     public static class BigIntegerTestClass {
         private BigInteger a;
     }
