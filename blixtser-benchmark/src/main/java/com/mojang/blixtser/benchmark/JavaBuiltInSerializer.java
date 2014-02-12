@@ -2,11 +2,7 @@ package com.mojang.blixtser.benchmark;
 
 import java.io.*;
 
-/**
- *
- * @author dfrisk
- */
-public class SimpleSerializer implements Serializer {
+public class JavaBuiltInSerializer implements Serializer {
 
     @Override
     public byte[] serialize(Object obj) {
