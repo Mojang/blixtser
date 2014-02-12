@@ -13,7 +13,7 @@ then you are in big trouble!
 ## Contents
 
 - [Quickstart](#quickstart)
-- [Supported Types](#supportedtypes)
+- [Supported Types](#supported-types)
 
 ## Quickstart
 
