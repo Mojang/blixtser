@@ -320,6 +320,13 @@ class SerializationUtils {
         }
     }
 
+    static class DateSerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            serializeObject(dateClassInfo, unsafeMemory, object, offset);
+       }
+    }
+
     static class StringSerializer implements Serializer {
         @Override
         public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
@@ -338,6 +345,13 @@ class SerializationUtils {
         @Override
         public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
             deserializeObject(stringClassInfo, unsafeMemory, object, offset);
+        }
+    }
+
+    static class DateDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            deserializeObject(dateClassInfo, unsafeMemory, object, offset);
         }
     }
 

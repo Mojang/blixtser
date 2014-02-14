@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Date;
 
 public class TestClasses {
 
@@ -441,6 +442,14 @@ public class TestClasses {
         }
     }
 
+    /**
+     *
+     */
+    @Data
+    @EqualsAndHashCode
+    public static class DateTestClass {
+        private Date a;
+    }
 
 
 }

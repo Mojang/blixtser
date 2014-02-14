@@ -1,6 +1,7 @@
 package com.mojang.blixtser.core;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -108,6 +109,7 @@ public abstract class TypeRepository {
             serializers.put(StringBuffer.class, new StringBufferSerializer());
             serializers.put(StringBuilder.class, new StringBuilderSerializer());
 
+            serializers.put(Date.class, new DateSerializer());
             serializers.put(Enum.class, new EnumSerializer());
         }
 
@@ -160,8 +162,8 @@ public abstract class TypeRepository {
             deserializers.put(StringBuffer.class, new StringBufferDeserializer());
             deserializers.put(StringBuilder.class, new StringBuilderDeserializer());
 
+            deserializers.put(Date.class, new DateDeserializer());
         }
-
 
     }
 

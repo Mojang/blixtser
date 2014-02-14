@@ -15,34 +15,43 @@ class ClassSchemaBuilder {
     static ClassInfo stringBufferInfo;
     static ClassInfo stringBuilderInfo;
     static ClassInfo bigIntegerClassInfo;
+    static ClassInfo dateClassInfo;
 
     ClassSchemaBuilder() {
         Set<String> ignoreFields = new HashSet<>();
         ignoreFields.add("hash");
 
-        stringClassInfo = createClassInfo(String.class, ignoreFields);
+        stringClassInfo = createClassInfo(String.class, ignoreFields, false);
         stringBufferInfo = createClassInfo(StringBuffer.class);
         stringBuilderInfo = createClassInfo(StringBuilder.class);
         bigIntegerClassInfo = createClassInfo(BigInteger.class);
+
+        ignoreFields.clear();
+        ignoreFields.add("cdate");
+        dateClassInfo = createClassInfo(Date.class, ignoreFields, true);
     }
 
     void registerClass(Class<?> c, Set<String> ignoreFields) {
+        registerClass(c, ignoreFields, false);
+    }
+
+    void registerClass(Class<?> c, Set<String> ignoreFields, boolean withTransient) {
         ClassInfo classInfo = classInfoCache.get(c);
         if (classInfo == null) {
-            classInfo = createClassInfo(c, ignoreFields);
+            classInfo = createClassInfo(c, ignoreFields, withTransient);
             int code = c.hashCode();
             classInfoCache.put(code, classInfo);
         }
     }
 
     ClassInfo createClassInfo(Class<?> c) {
-        return createClassInfo(c, Collections.<String>emptySet());
+        return createClassInfo(c, Collections.<String>emptySet(), false);
     }
 
-    ClassInfo createClassInfo(Class<?> c, Set<String> fieldNamesToIgnore) {
+    ClassInfo createClassInfo(Class<?> c, Set<String> fieldNamesToIgnore, boolean withTransient) {
         ClassInfo classInfo = classInfoCache.get(c);
         if (classInfo == null) {
-            List<Field> fields = getFieldsFor(c, fieldNamesToIgnore);
+            List<Field> fields = getFieldsFor(c, fieldNamesToIgnore, withTransient);
             FieldInfo[] fieldInfos = new FieldInfo[fields.size()];
             for (int i = 0; i < fields.size(); i++) {
                 Field field = fields.get(i);
@@ -93,15 +102,17 @@ class ClassSchemaBuilder {
         });
     }
 
-    private List<Field> getFieldsFor(Class<?> c, Set<String> ignoreFields) {
+    private List<Field> getFieldsFor(Class<?> c, Set<String> ignoreFields, boolean withTransient) {
         List<Field> fields = new ArrayList<>();
         List<Field> ffs = getAllFieldsRecursiveFor(c);
         for (Field f : ffs) {
             if (ignoreFields.contains(f.getName())) {
                 continue;
             }
-            if ((f.getModifiers() & Modifier.STATIC) == 0 && (f.getModifiers() & Modifier.TRANSIENT) == 0) {
-                fields.add(f);
+            if ((f.getModifiers() & Modifier.STATIC) == 0) {
+                if (withTransient || (f.getModifiers() & Modifier.TRANSIENT) == 0) {
+                    fields.add(f);
+                }
             }
         }
         return fields;

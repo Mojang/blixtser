@@ -42,6 +42,7 @@ Blixtser supports the following types out of the box:
 - `boolean`, `boolean[]`, `boolean[][]`, `Boolean`
 - `String`, `String[]`, `String[][]`, `StringBuffer`, `StringBuilder`
 - `Enum`
+- `Date`
 
 
 ## Benchmark

@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.mojang.blixtser.core.TestClasses.*;
 
@@ -404,6 +406,19 @@ public class BlixtserTest {
     public void test_string_2d_array() {
         String[][] a = new String[][] { new String[]{"Ämir", "Moulavi", null}, null, new String[]{"Daniel", "Frisk"}};
         String2DArrayTestClass testClass = new String2DArrayTestClass();
+        testClass.setA(a);
+
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+
+        testSerializationFor(testClass);
+    }
+
+    @Test
+    public void test_date() {
+        Date a = Calendar.getInstance().getTime();
+        DateTestClass testClass = new DateTestClass();
         testClass.setA(a);
 
         testSerializationFor(testClass);
