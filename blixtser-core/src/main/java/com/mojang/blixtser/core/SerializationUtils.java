@@ -64,7 +64,7 @@ class SerializationUtils {
             }
             unsafe.putObject(object, offset, deserializedObject);
         } catch (InstantiationException e) {
-            throw new RuntimeException("Failed to deserialize StringBuffer: " + e);
+            throw new RuntimeException("Failed to deserialize " + classInfo.clazz + ": " + e);
         }
     }
 
@@ -79,7 +79,7 @@ class SerializationUtils {
             }
             unsafe.putObjectVolatile(object, offset, deserializedObject);
         } catch (InstantiationException e) {
-            throw new RuntimeException("Failed to deserialize StringBuffer: " + e);
+            throw new RuntimeException("Failed to deserialize " + classInfo.clazz + ": " + e);
         }
     }
 
