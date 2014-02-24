@@ -22,8 +22,7 @@ public class BlixtserTest {
     @Test
     public void test_primitive_int() {
         int a = 16;
-        IntPrimitiveTestClass testClass = new IntPrimitiveTestClass();
-        testClass.setA(a);
+        IntPrimitiveTestClass testClass = new IntPrimitiveTestClass(a, a);
 
         testSerializationFor(testClass);
     }
@@ -31,8 +30,7 @@ public class BlixtserTest {
     @Test
     public void test_primitive_long() {
         long a = 162434234234211l;
-        LongPrimitiveTestClass testClass = new LongPrimitiveTestClass();
-        testClass.setA(a);
+        LongPrimitiveTestClass testClass = new LongPrimitiveTestClass(a, a);
 
         testSerializationFor(testClass);
     }
@@ -40,8 +38,7 @@ public class BlixtserTest {
     @Test
     public void test_primitive_double() {
         double a = 162434234.2323d;
-        DoublePrimitiveTestClass testClass = new DoublePrimitiveTestClass();
-        testClass.setA(a);
+        DoublePrimitiveTestClass testClass = new DoublePrimitiveTestClass(a, a);
 
         testSerializationFor(testClass);
     }
@@ -49,8 +46,7 @@ public class BlixtserTest {
     @Test
     public void test_primitive_float() {
         float a = 162434234.2323f;
-        FloatPrimitiveTestClass testClass = new FloatPrimitiveTestClass();
-        testClass.setA(a);
+        FloatPrimitiveTestClass testClass = new FloatPrimitiveTestClass(a, a);
 
         testSerializationFor(testClass);
     }
@@ -58,8 +54,7 @@ public class BlixtserTest {
     @Test
     public void test_primitive_char() {
         char a = '形';
-        CharPrimitiveTestClass testClass = new CharPrimitiveTestClass();
-        testClass.setA(a);
+        CharPrimitiveTestClass testClass = new CharPrimitiveTestClass(a, a);
 
         testSerializationFor(testClass);
     }
@@ -67,8 +62,7 @@ public class BlixtserTest {
     @Test
     public void test_primitive_short() {
         short a = 12;
-        ShortPrimitiveTestClass testClass = new ShortPrimitiveTestClass();
-        testClass.setA(a);
+        ShortPrimitiveTestClass testClass = new ShortPrimitiveTestClass(a, a);
 
         testSerializationFor(testClass);
     }
@@ -76,8 +70,7 @@ public class BlixtserTest {
     @Test
     public void test_primitive_byte() {
         byte a = 0x12;
-        BytePrimitiveTestClass testClass = new BytePrimitiveTestClass();
-        testClass.setA(a);
+        BytePrimitiveTestClass testClass = new BytePrimitiveTestClass(a, a);
 
         testSerializationFor(testClass);
     }
@@ -85,8 +78,7 @@ public class BlixtserTest {
     @Test
     public void test_primitive_boolean() {
         boolean a = true;
-        BooleanPrimitiveTestClass testClass = new BooleanPrimitiveTestClass();
-        testClass.setA(a);
+        BooleanPrimitiveTestClass testClass = new BooleanPrimitiveTestClass(a, a);
 
         testSerializationFor(testClass);
     }
@@ -94,8 +86,7 @@ public class BlixtserTest {
     @Test
     public void test_enum() {
         EnumTestClass.SomeEnum a = EnumTestClass.SomeEnum.B;
-        EnumTestClass testClass = new EnumTestClass();
-        testClass.setA(a);
+        EnumTestClass testClass = new EnumTestClass(a, a);
 
         testSerializationFor(testClass);
     }
@@ -103,12 +94,13 @@ public class BlixtserTest {
     @Test
     public void test_string() {
         String a = "Ämir & Daniel";
-        StringTestClass testClass = new StringTestClass();
-        testClass.setA(a);
+        String b = "Ämir & Daniel";
+        StringTestClass testClass = new StringTestClass(a, b);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }
@@ -116,12 +108,13 @@ public class BlixtserTest {
     @Test
     public void test_non_primitive_int() {
         Integer a = 1615;
-        IntNonPrimitiveTestClass testClass = new IntNonPrimitiveTestClass();
-        testClass.setA(a);
+        Integer b = 1716;
+        IntNonPrimitiveTestClass testClass = new IntNonPrimitiveTestClass(a, b);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }
@@ -129,12 +122,13 @@ public class BlixtserTest {
     @Test
     public void test_non_primitive_long() {
         Long a = 1615123l;
-        LongNonPrimitiveTestClass testClass = new LongNonPrimitiveTestClass();
-        testClass.setA(a);
+        Long b = 1615123l;
+        LongNonPrimitiveTestClass testClass = new LongNonPrimitiveTestClass(a, b);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }
@@ -142,12 +136,13 @@ public class BlixtserTest {
     @Test
     public void test_non_primitive_double() {
         Double a = 1615123.23d;
-        DoubleNonPrimitiveTestClass testClass = new DoubleNonPrimitiveTestClass();
-        testClass.setA(a);
+        Double b = 1615123.23d;
+        DoubleNonPrimitiveTestClass testClass = new DoubleNonPrimitiveTestClass(a, b);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }
@@ -155,12 +150,13 @@ public class BlixtserTest {
     @Test
     public void test_non_primitive_float() {
         Float a = 1615123.23f;
-        FloatNonPrimitiveTestClass testClass = new FloatNonPrimitiveTestClass();
-        testClass.setA(a);
+        Float b = 1615123.23f;
+        FloatNonPrimitiveTestClass testClass = new FloatNonPrimitiveTestClass(a, b);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }
@@ -168,12 +164,13 @@ public class BlixtserTest {
     @Test
     public void test_non_primitive_char() {
         Character a = 'Ä';
-        CharNonPrimitiveTestClass testClass = new CharNonPrimitiveTestClass();
-        testClass.setA(a);
+        Character b = 'Ö';
+        CharNonPrimitiveTestClass testClass = new CharNonPrimitiveTestClass(a, b);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }
@@ -181,12 +178,13 @@ public class BlixtserTest {
     @Test
     public void test_non_primitive_short() {
         Short a = 12;
-        ShortNonPrimitiveTestClass testClass = new ShortNonPrimitiveTestClass();
-        testClass.setA(a);
+        Short b = 12;
+        ShortNonPrimitiveTestClass testClass = new ShortNonPrimitiveTestClass(a, b);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }
@@ -194,25 +192,25 @@ public class BlixtserTest {
     @Test
     public void test_non_primitive_byte() {
         Byte a = 0x12;
-        ByteNonPrimitiveTestClass testClass = new ByteNonPrimitiveTestClass();
-        testClass.setA(a);
+        Byte b = 0x13;
+        ByteNonPrimitiveTestClass testClass = new ByteNonPrimitiveTestClass(a, b);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_non_primitive_boolean() {
-        Boolean a = true;
-        BooleanNonPrimitiveTestClass testClass = new BooleanNonPrimitiveTestClass();
-        testClass.setA(a);
+        BooleanNonPrimitiveTestClass testClass = new BooleanNonPrimitiveTestClass(true, true);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }
@@ -221,12 +219,16 @@ public class BlixtserTest {
     public void test_string_builder() {
         StringBuilder a = new StringBuilder();
         a.append("Ämir & Daniel");
-        StringBuilderTestClass testClass = new StringBuilderTestClass();
 
-        testClass.setA(a);
+        StringBuilder b = new StringBuilder();
+        b.append("Ämir & Daniel");
+
+        StringBuilderTestClass testClass = new StringBuilderTestClass(a, b);
+
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
 
     }
@@ -235,12 +237,16 @@ public class BlixtserTest {
     public void test_string_buffer() {
         StringBuffer a = new StringBuffer();
         a.append("Ämir & Daniel");
-        StringBufferTestClass testClass = new StringBufferTestClass();
 
-        testClass.setA(a);
+        StringBuffer b = new StringBuffer();
+        b.append("Ämir & Daniel");
+
+        StringBufferTestClass testClass = new StringBufferTestClass(a, b);
+
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
 
     }
@@ -248,8 +254,8 @@ public class BlixtserTest {
     @Test
     public void test_primitive_int_array() {
         int[] a = new int[] {1, 2, 3, 4, 5, 6};
-        IntPrimitiveArrayTestClass testClass = new IntPrimitiveArrayTestClass();
-        testClass.setA(a);
+        int[] b = new int[] {1, 2, 3, 4, 5, 6};
+        IntPrimitiveArrayTestClass testClass = new IntPrimitiveArrayTestClass(a, b);
 
         testSerializationFor(testClass);
     }
@@ -257,9 +263,13 @@ public class BlixtserTest {
     @Test
     public void test_primitive_int_2d_array() {
         int[][] a = new int[][] { new int[]{1, 2}, new int[]{3, 4}, new int[]{5, 6} };
-        IntPrimitive2DArrayTestClass testClass = new IntPrimitive2DArrayTestClass();
-        testClass.setA(a);
+        int[][] b = new int[][] { new int[]{1, 2}, new int[]{3, 4}, new int[]{5, 6} };
+        IntPrimitive2DArrayTestClass testClass = new IntPrimitive2DArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 

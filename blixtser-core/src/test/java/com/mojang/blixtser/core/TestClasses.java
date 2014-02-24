@@ -1,5 +1,6 @@
 package com.mojang.blixtser.core;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,26 +16,34 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class IntPrimitiveTestClass {
-        private int a;
+        int a;
+        volatile int b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class IntNonPrimitiveTestClass {
         private Integer a;
+        volatile Integer b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class IntPrimitiveArrayTestClass {
-        private int[] a;
+        int[] a;
+        volatile int[] b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class IntPrimitive2DArrayTestClass {
-        private int[][] a;
+        int[][] a;
+        volatile int[][] b;
     }
 
     @Data
@@ -49,14 +58,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class LongPrimitiveTestClass {
-        private long a;
+        long a;
+        volatile long b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class LongNonPrimitiveTestClass {
-        private Long a;
+        Long a;
+        volatile Long b;
     }
 
     @Data
@@ -77,14 +90,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class DoublePrimitiveTestClass {
-        private double a;
+        double a;
+        volatile double b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class DoubleNonPrimitiveTestClass {
-        private Double a;
+        Double a;
+        volatile Double b;
     }
 
     @Data
@@ -105,14 +122,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class FloatPrimitiveTestClass {
-        private float a;
+        float a;
+        volatile float b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class FloatNonPrimitiveTestClass {
-        private Float a;
+        Float a;
+        volatile Float b;
     }
 
     @Data
@@ -133,14 +154,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class CharPrimitiveTestClass {
-        private char a;
+        char a;
+        volatile char b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class CharNonPrimitiveTestClass {
-        private Character a;
+        Character a;
+        volatile Character b;
     }
 
     @Data
@@ -161,14 +186,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class ShortPrimitiveTestClass {
-        private short a;
+        short a;
+        volatile short b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class ShortNonPrimitiveTestClass {
-        private Short a;
+        Short a;
+        volatile Short b;
     }
 
     @Data
@@ -189,14 +218,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class BytePrimitiveTestClass {
-        private byte a;
+        byte a;
+        volatile byte b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class ByteNonPrimitiveTestClass {
-        private Byte a;
+        Byte a;
+        volatile Byte b;
     }
 
     @Data
@@ -217,14 +250,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class BooleanPrimitiveTestClass {
-        private boolean a;
+        boolean a;
+        volatile boolean b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class BooleanNonPrimitiveTestClass {
-        private Boolean a;
+        Boolean a;
+        volatile Boolean b;
     }
 
     @Data
@@ -245,13 +282,17 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class StringTestClass {
-        private String a;
+        String a;
+        volatile String b;
     }
 
     @Data
+    @AllArgsConstructor
     public static class StringBuilderTestClass {
-        private StringBuilder a;
+        StringBuilder a;
+        volatile StringBuilder b;
 
         @Override
         public boolean equals(Object o) {
@@ -271,8 +312,10 @@ public class TestClasses {
     }
 
     @Data
+    @AllArgsConstructor
     public static class StringBufferTestClass {
-        private StringBuffer a;
+        StringBuffer a;
+        volatile StringBuffer b;
 
         @Override
         public boolean equals(Object o) {
@@ -310,8 +353,10 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class EnumTestClass {
-        private SomeEnum a;
+        SomeEnum a;
+        volatile SomeEnum b;
 
         public enum SomeEnum {
             A,

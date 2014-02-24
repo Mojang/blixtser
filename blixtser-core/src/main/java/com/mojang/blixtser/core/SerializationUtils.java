@@ -31,8 +31,7 @@ class SerializationUtils {
     }
 
     private static boolean readNullableObject(UnsafeMemory unsafeMemory) {
-        byte flag = unsafeMemory.readByte();
-        return flag == 0;
+        return unsafeMemory.readByte() == 0;
     }
 
     private static void serializeObject(ClassInfo classInfo, UnsafeMemory unsafeMemory, Object object, long offset) {
@@ -324,7 +323,7 @@ class SerializationUtils {
         @Override
         public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
             serializeObject(dateClassInfo, unsafeMemory, object, offset);
-       }
+        }
     }
 
     static class StringSerializer implements Serializer {
@@ -681,9 +680,24 @@ class SerializationUtils {
         @Override
         public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
             int[][] ints = (int[][]) unsafe.getObject(object, offset);
-            unsafeMemory.writeInt(ints.length);
-            for (int[] anInt : ints) {
-                unsafeMemory.writeIntArray(anInt);
+            if (!writeNullableObject(unsafeMemory, ints)) {
+                unsafeMemory.writeInt(ints.length);
+                for (int[] anInt : ints) {
+                    unsafeMemory.writeIntArray(anInt);
+                }
+            }
+        }
+    }
+
+    static class Int2DArrayVolatileSerializer implements Serializer {
+        @Override
+        public void serialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            int[][] ints = (int[][]) unsafe.getObjectVolatile(object, offset);
+            if (!writeNullableObject(unsafeMemory, ints)) {
+                unsafeMemory.writeInt(ints.length);
+                for (int[] anInt : ints) {
+                    unsafeMemory.writeIntArray(anInt);
+                }
             }
         }
     }
@@ -830,11 +844,26 @@ class SerializationUtils {
     static class Int2DArrayDeserializer implements Deserializer {
         @Override
         public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
-            int[][] ints_2d = new int[unsafeMemory.readInt()][];
-            for (int i = 0; i < ints_2d.length; i++) {
-                ints_2d[i] = unsafeMemory.readIntArray();
+            if (!readNullableObject(unsafeMemory)) {
+                int[][] ints_2d = new int[unsafeMemory.readInt()][];
+                for (int i = 0; i < ints_2d.length; i++) {
+                    ints_2d[i] = unsafeMemory.readIntArray();
+                }
+                unsafe.putObject(object, offset, ints_2d);
             }
-            unsafe.putObject(object, offset, ints_2d);
+        }
+    }
+
+    static class Int2DArrayVolatileDeserializer implements Deserializer {
+        @Override
+        public void deserialize(UnsafeMemory unsafeMemory, Object object, long offset) {
+            if (!readNullableObject(unsafeMemory)) {
+                int[][] ints_2d = new int[unsafeMemory.readInt()][];
+                for (int i = 0; i < ints_2d.length; i++) {
+                    ints_2d[i] = unsafeMemory.readIntArray();
+                }
+                unsafe.putObjectVolatile(object, offset, ints_2d);
+            }
         }
     }
 

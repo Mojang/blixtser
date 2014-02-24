@@ -198,6 +198,7 @@ public abstract class TypeRepository {
         private void buildVolatileSerializers() {
             serializers.put(int.class, new IntVolatileSerializer());
             serializers.put(int[].class, new IntArrayVolatileSerializer());
+            serializers.put(int[][].class, new Int2DArrayVolatileSerializer());
             serializers.put(Integer.class, new IntegerVolatileSerializer());
             serializers.put(BigInteger.class, new BigIntegerVolatileSerializer());
 
@@ -240,6 +241,7 @@ public abstract class TypeRepository {
         private void buildVolatileDeserializers() {
             deserializers.put(int.class, new IntVolatileDeserializer());
             deserializers.put(int[].class, new IntArrayVolatileDeserializer());
+            deserializers.put(int[][].class, new Int2DArrayVolatileDeserializer());
             deserializers.put(Integer.class, new IntegerVolatileDeserializer());
             deserializers.put(BigInteger.class, new BigIntegerVolatileDeserializer());
 
