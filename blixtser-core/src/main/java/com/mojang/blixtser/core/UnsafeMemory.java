@@ -170,56 +170,56 @@ public class UnsafeMemory {
 
     public final void writeInteger(final Integer value) {
         ensureCapacity(SIZE_OF_INT + 1);
-        if (writeAWrapper(value)) {
+        if (writeNullable(value)) {
             writeInt(value);
         }
     }
 
     public final void writeLongWrapper(final Long value) {
         ensureCapacity(SIZE_OF_LONG + 1);
-        if (writeAWrapper(value)) {
+        if (writeNullable(value)) {
             writeLong(value);
         }
     }
 
     public final void writeFloatWrapper(final Float value) {
         ensureCapacity(SIZE_OF_FLOAT + 1);
-        if (writeAWrapper(value)) {
+        if (writeNullable(value)) {
             writeFloat(value);
         }
     }
 
     public final void writeDoubleWrapper(final Double value) {
         ensureCapacity(SIZE_OF_DOUBLE + 1);
-        if (writeAWrapper(value)) {
+        if (writeNullable(value)) {
             writeDouble(value);
         }
     }
 
     public final void writeShortWrapper(final Short value) {
         ensureCapacity(SIZE_OF_SHORT);
-        if (writeAWrapper(value)) {
+        if (writeNullable(value)) {
             writeShort(value);
         }
     }
 
     public final void writeBooleanWrapper(final Boolean value) {
         ensureCapacity(SIZE_OF_BOOLEAN + 1);
-        if (writeAWrapper(value)) {
+        if (writeNullable(value)) {
             writeBoolean(value);
         }
     }
 
     public final void writeCharacter(final Character value) {
         ensureCapacity(SIZE_OF_CHAR + 1);
-        if (writeAWrapper(value)) {
+        if (writeNullable(value)) {
             writeChar(value);
         }
     }
 
     public final void writeByteWrapper(final Byte value) {
         ensureCapacity(SIZE_OF_BYTE + 1);
-        if (writeAWrapper(value)) {
+        if (writeNullable(value)) {
             writeByte(value);
         }
     }
@@ -266,98 +266,138 @@ public class UnsafeMemory {
 
     public final void writeCharArray(final char[] values) {
         ensureCapacity(SIZE_OF_INT);
-        writeInt(values.length);
-        writeGenericArray(values.length << 1, charArrayOffset, values);
+        if (writeNullable(values)) {
+            writeInt(values.length);
+            writeGenericArray(values.length << 1, charArrayOffset, values);
+        }
     }
 
     public final void writeByteArray(final byte[] values) {
         ensureCapacity(SIZE_OF_INT);
-        writeInt(values.length);
-        writeGenericArray(values.length, byteArrayOffset, values);
+        if (writeNullable(values)) {
+            writeInt(values.length);
+            writeGenericArray(values.length, byteArrayOffset, values);
+        }
     }
 
     public final void writeLongArray(final long[] values) {
         ensureCapacity(SIZE_OF_INT);
-        writeInt(values.length);
-        writeGenericArray(values.length << 3, longArrayOffset, values);
+        if (writeNullable(values)) {
+            writeInt(values.length);
+            writeGenericArray(values.length << 3, longArrayOffset, values);
+        }
     }
 
     public final void writeDoubleArray(final double[] values) {
         ensureCapacity(SIZE_OF_INT);
-        writeInt(values.length);
-        writeGenericArray(values.length << 3, doubleArrayOffset, values);
+        if (writeNullable(values)) {
+            writeInt(values.length);
+            writeGenericArray(values.length << 3, doubleArrayOffset, values);
+        }
     }
 
     public final void writeFloatArray(final float[] values) {
         ensureCapacity(SIZE_OF_INT);
-        writeInt(values.length);
-        writeGenericArray(values.length << 2, floatArrayOffset, values);
+        if (writeNullable(values)) {
+            writeInt(values.length);
+            writeGenericArray(values.length << 2, floatArrayOffset, values);
+        }
     }
 
     public final void writeIntArray(final int[] values) {
         ensureCapacity(SIZE_OF_INT);
-        writeInt(values.length);
-        writeGenericArray(values.length << 2, intArrayOffset, values);
+        if (writeNullable(values)) {
+            writeInt(values.length);
+            writeGenericArray(values.length << 2, intArrayOffset, values);
+        }
     }
 
     public final void writeShortArray(final short[] values) {
         ensureCapacity(SIZE_OF_INT);
-        writeInt(values.length);
-        writeGenericArray(values.length << 1, shortArrayOffset, values);
+        if (writeNullable(values)) {
+            writeInt(values.length);
+            writeGenericArray(values.length << 1, shortArrayOffset, values);
+        }
     }
 
     public final void writeBooleanArray(final boolean[] values) {
         ensureCapacity(SIZE_OF_INT);
-        writeInt(values.length);
-        writeGenericArray(values.length, booleanArrayOffset, values);
+        if (writeNullable(values)) {
+            writeInt(values.length);
+            writeGenericArray(values.length, booleanArrayOffset, values);
+        }
     }
 
     public final char[] readCharArray() {
-        char[] values = new char[readInt()];
-        readAnArray(values.length << 1, charArrayOffset, values);
-        return values;
+        if (readNullable()) {
+            char[] values = new char[readInt()];
+            readAnArray(values.length << 1, charArrayOffset, values);
+            return values;
+        }
+        return null;
     }
 
     public final byte[] readByteArray() {
-        byte[] values = new byte[readInt()];
-        readAnArray(values.length, byteArrayOffset, values);
-        return values;
+        if (readNullable()) {
+            byte[] values = new byte[readInt()];
+            readAnArray(values.length, byteArrayOffset, values);
+            return values;
+        }
+        return null;
     }
 
     public final int[] readIntArray() {
-        int[] values = new int[readInt()];
-        readAnArray(values.length << 2, intArrayOffset, values);
-        return values;
+        if (readNullable()) {
+            int[] values = new int[readInt()];
+            readAnArray(values.length << 2, intArrayOffset, values);
+            return values;
+        }
+        return null;
     }
 
     public final long[] readLongArray() {
-        long[] values = new long[readInt()];
-        readAnArray(values.length << 3, longArrayOffset, values);
-        return values;
+        if (readNullable()) {
+            long[] values = new long[readInt()];
+            readAnArray(values.length << 3, longArrayOffset, values);
+            return values;
+        }
+        return null;
     }
 
     public final double[] readDoubleArray() {
-        double[] values = new double[readInt()];
-        readAnArray(values.length << 3, doubleArrayOffset, values);
-        return values;
+        if (readNullable()) {
+            double[] values = new double[readInt()];
+            readAnArray(values.length << 3, doubleArrayOffset, values);
+            return values;
+        }
+        return null;
     }
 
     public final float[] readFloatArray() {
-        float[] values = new float[readInt()];
-        readAnArray(values.length << 2, floatArrayOffset, values);
-        return values;
+        if (readNullable()) {
+            float[] values = new float[readInt()];
+            readAnArray(values.length << 2, floatArrayOffset, values);
+            return values;
+        }
+        return null;
     }
 
     public final short[] readShortArray() {
-        short[] values = new short[readInt()];
-        readAnArray(values.length << 1, shortArrayOffset, values);
-        return values;
+        if (readNullable()) {
+            short[] values = new short[readInt()];
+            readAnArray(values.length << 1, shortArrayOffset, values);
+            return values;
+        }
+        return null;
     }
 
     public final boolean[] readBooleanArray() {
-        boolean[] values = new boolean[readInt()];
-        readAnArray(values.length, booleanArrayOffset, values);
-        return values;
+        if (readNullable()) {
+            boolean[] values = new boolean[readInt()];
+            readAnArray(values.length, booleanArrayOffset, values);
+            return values;
+        }
+        return null;
     }
 
     public final void writeGenericArray(long bytesToCopy, long arrayOffset, Object values) {
@@ -371,7 +411,7 @@ public class UnsafeMemory {
         pos += bytesToCopy;
     }
 
-    private boolean writeAWrapper(final Object value) {
+    private boolean writeNullable(final Object value) {
         if (value != null) {
             writeByte((byte) 1);
             return true;
@@ -379,6 +419,10 @@ public class UnsafeMemory {
             writeByte((byte) 0);
             return false;
         }
+    }
+
+    private boolean readNullable() {
+        return readByte() != 0;
     }
 
     public final void writeBatch(Object object, long offset, int size) {

@@ -204,34 +204,42 @@ public abstract class TypeRepository {
 
             serializers.put(long.class, new LongVolatileSerializer());
             serializers.put(long[].class, new LongArrayVolatileSerializer());
+            serializers.put(long[][].class, new Long2DArrayVolatileSerializer());
             serializers.put(Long.class, new LongWrapperVolatileSerializer());
 
             serializers.put(short.class, new ShortVolatileSerializer());
             serializers.put(short[].class, new ShortArrayVolatileSerializer());
+            serializers.put(short[][].class, new Short2DArrayVolatileSerializer());
             serializers.put(Short.class, new ShortWrapperVolatileSerializer());
 
             serializers.put(byte.class, new ByteVolatileSerializer());
             serializers.put(byte[].class, new ByteArrayVolatileSerializer());
+            serializers.put(byte[][].class, new Byte2DArrayVolatileSerializer());
             serializers.put(Byte.class, new ByteWrapperVolatileSerializer());
 
             serializers.put(char.class, new CharVolatileSerializer());
             serializers.put(char[].class, new CharArrayVolatileSerializer());
+            serializers.put(char[][].class, new Char2DArrayVolatileSerializer());
             serializers.put(Character.class, new CharacterVolatileSerializer());
 
             serializers.put(boolean.class, new BooleanVolatileSerializer());
             serializers.put(boolean[].class, new BooleanArrayVolatileSerializer());
+            serializers.put(boolean[][].class, new Boolean2DArrayVolatileSerializer());
             serializers.put(Boolean.class, new BooleanWrapperVolatileSerializer());
 
             serializers.put(float.class, new FloatVolatileSerializer());
             serializers.put(float[].class, new FloatArrayVolatileSerializer());
+            serializers.put(float[][].class, new Float2DArrayVolatileSerializer());
             serializers.put(Float.class, new FloatWrapperVolatileSerializer());
 
             serializers.put(double.class, new DoubleVolatileSerializer());
             serializers.put(double[].class, new DoubleArrayVolatileSerializer());
+            serializers.put(double[][].class, new Double2DArrayVolatileSerializer());
             serializers.put(Double.class, new DoubleWrapperVolatileSerializer());
 
             serializers.put(String.class, new StringVolatileSerializer());
             serializers.put(String[].class, new StringArrayVolatileSerializer());
+            serializers.put(String[][].class, new String2DArrayVolatileSerializer());
             serializers.put(StringBuffer.class, new StringBufferVolatileSerializer());
             serializers.put(StringBuilder.class, new StringBuilderVolatileSerializer());
 
@@ -247,34 +255,42 @@ public abstract class TypeRepository {
 
             deserializers.put(long.class, new LongVolatileDeserializer());
             deserializers.put(long[].class, new LongArrayVolatileDeserializer());
+            deserializers.put(long[][].class, new Long2DArrayVolatileDeserializer());
             deserializers.put(Long.class, new LongWrapperVolatileDeserializer());
 
             deserializers.put(short.class, new ShortVolatileDeserializer());
             deserializers.put(short[].class, new ShortArrayVolatileDeserializer());
+            deserializers.put(short[][].class, new Short2DArrayVolatileDeserializer());
             deserializers.put(Short.class, new ShortWrapperVolatileDeserializer());
 
             deserializers.put(byte.class, new ByteVolatileDeserializer());
             deserializers.put(byte[].class, new ByteArrayVolatileDeserializer());
+            deserializers.put(byte[][].class, new Byte2DArrayVolatileDeserializer());
             deserializers.put(Byte.class, new ByteWrapperVolatileDeserializer());
 
             deserializers.put(char.class, new CharVolatileDeserializer());
             deserializers.put(char[].class, new CharArrayVolatileDeserializer());
+            deserializers.put(char[][].class, new Char2DArrayVolatileDeserializer());
             deserializers.put(Character.class, new CharacterVolatileDeserializer());
 
             deserializers.put(boolean.class, new BooleanVolatileDeserializer());
             deserializers.put(boolean[].class, new BooleanArrayVolatileDeserializer());
+            deserializers.put(boolean[][].class, new Boolean2DArrayVolatileDeserializer());
             deserializers.put(Boolean.class, new BooleanWrapperVolatileDeserializer());
 
             deserializers.put(float.class, new FloatVolatileDeserializer());
             deserializers.put(float[].class, new FloatArrayVolatileDeserializer());
+            deserializers.put(float[][].class, new Float2DArrayVolatileDeserializer());
             deserializers.put(Float.class, new FloatWrapperVolatileDeserializer());
 
             deserializers.put(double.class, new DoubleVolatileDeserializer());
             deserializers.put(double[].class, new DoubleArrayVolatileDeserializer());
+            deserializers.put(double[][].class, new Double2DArrayVolatileDeserializer());
             deserializers.put(Double.class, new DoubleWrapperVolatileDeserializer());
 
             deserializers.put(String.class, new StringVolatileDeserializer());
             deserializers.put(String[].class, new StringArrayVolatileDeserializer());
+            deserializers.put(String[][].class, new String2DArrayVolatileDeserializer());
             deserializers.put(StringBuffer.class, new StringBufferVolatileDeserializer());
             deserializers.put(StringBuilder.class, new StringBuilderVolatileDeserializer());
 

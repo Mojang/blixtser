@@ -258,12 +258,17 @@ public class BlixtserTest {
         IntPrimitiveArrayTestClass testClass = new IntPrimitiveArrayTestClass(a, b);
 
         testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
+
+        testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_int_2d_array() {
         int[][] a = new int[][] { new int[]{1, 2}, new int[]{3, 4}, new int[]{5, 6} };
-        int[][] b = new int[][] { new int[]{1, 2}, new int[]{3, 4}, new int[]{5, 6} };
+        int[][] b = new int[][] { new int[]{1, 2}, new int[]{3, 4}, new int[]{5, 6}, null };
         IntPrimitive2DArrayTestClass testClass = new IntPrimitive2DArrayTestClass(a, b);
 
         testSerializationFor(testClass);
@@ -276,138 +281,195 @@ public class BlixtserTest {
     @Test
     public void test_primitive_long_array() {
         long[] a = new long[] {1l, 2l, 3l, 4l, 5l, 6l};
-        LongPrimitiveArrayTestClass testClass = new LongPrimitiveArrayTestClass();
-        testClass.setA(a);
+        long[] b = new long[] {1l, 2l, 3l, 4l, 5l, 6l};
+        LongPrimitiveArrayTestClass testClass = new LongPrimitiveArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_long_2d_array() {
-        long[][] a = new long[][] {new long[]{1l}, new long[]{2l, 3l, 4l, 5l, 6l}};
-        LongPrimitive2DArrayTestClass testClass = new LongPrimitive2DArrayTestClass();
-        testClass.setA(a);
+        long[][] a = new long[][] {new long[]{1l}, null, new long[]{2l, 3l, 4l, 5l, 6l}};
+        long[][] b = new long[][] {new long[]{1l}, new long[]{2l, 3l, 4l, 5l, 6l}, null};
+        LongPrimitive2DArrayTestClass testClass = new LongPrimitive2DArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_double_array() {
         double[] a = new double[] {1.1, 2.2, 3.3, 4.4, 5.5, 6.6};
-        DoublePrimitiveArrayTestClass testClass = new DoublePrimitiveArrayTestClass();
-        testClass.setA(a);
+        double[] b = new double[] {1.1, 2.2, 3.3, 4.4, 5.5, 6.6};
+        DoublePrimitiveArrayTestClass testClass = new DoublePrimitiveArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_double_2d_array() {
-        double[][] a = new double[][] { new double[]{1.1, 2.2, 3.3}, new double[]{4.4, 5.5, 6.6}};
-        DoublePrimitive2DArrayTestClass testClass = new DoublePrimitive2DArrayTestClass();
-        testClass.setA(a);
+        double[][] a = new double[][] { new double[]{1.1, 2.2, 3.3}, new double[]{4.4, 5.5, 6.6}, null};
+        double[][] b = new double[][] { new double[]{1.1, 2.2, 3.3}, null, new double[]{4.4, 5.5, 6.6}};
+        DoublePrimitive2DArrayTestClass testClass = new DoublePrimitive2DArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_float_array() {
         float[] a = new float[] {1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f};
-        FloatPrimitiveArrayTestClass testClass = new FloatPrimitiveArrayTestClass();
-        testClass.setA(a);
+        float[] b = new float[] {1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f};
+        FloatPrimitiveArrayTestClass testClass = new FloatPrimitiveArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_float_2d_array() {
-        float[][] a = new float[][] { new float[]{1.1f, 2.2f, 3.3f}, new float[]{4.4f, 5.5f, 6.6f}};
-        FloatPrimitive2DArrayTestClass testClass = new FloatPrimitive2DArrayTestClass();
-        testClass.setA(a);
+        float[][] a = new float[][] { new float[]{1.1f, 2.2f, 3.3f}, null, new float[]{4.4f, 5.5f, 6.6f}};
+        float[][] b = new float[][] { new float[]{1.1f, 2.2f, 3.3f}, null, new float[]{4.4f, 5.5f, 6.6f}};
+        FloatPrimitive2DArrayTestClass testClass = new FloatPrimitive2DArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_char_array() {
         char[] a = new char[] {'A', 'm', 'i', 'r'};
-        CharPrimitiveArrayTestClass testClass = new CharPrimitiveArrayTestClass();
-        testClass.setA(a);
+        char[] b = new char[] {'A', 'm', 'i', 'r'};
+        CharPrimitiveArrayTestClass testClass = new CharPrimitiveArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_char_2d_array() {
-        char[][] a = new char[][] { new char[]{'A', 'm'}, new char[]{'i', 'r'}};
-        CharPrimitive2DArrayTestClass testClass = new CharPrimitive2DArrayTestClass();
-        testClass.setA(a);
+        char[][] a = new char[][] { new char[]{'A', 'm'}, null, new char[]{'i', 'r'}};
+        char[][] b = new char[][] { new char[]{'A', 'm'}, new char[]{'i', 'r'}, null};
+        CharPrimitive2DArrayTestClass testClass = new CharPrimitive2DArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_short_array() {
         short[] a = new short[] {12, 13, 14, 15};
-        ShortPrimitiveArrayTestClass testClass = new ShortPrimitiveArrayTestClass();
-        testClass.setA(a);
+        short[] b = new short[] {12, 13, 14, 15};
+        ShortPrimitiveArrayTestClass testClass = new ShortPrimitiveArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_short_2d_array() {
-        short[][] a = new short[][] { new short[]{12, 13}, new short[]{14, 15}};
-        ShortPrimitive2DArrayTestClass testClass = new ShortPrimitive2DArrayTestClass();
-        testClass.setA(a);
+        short[][] a = new short[][] { new short[]{12, 13}, null, new short[]{14, 15}};
+        short[][] b = new short[][] { new short[]{12, 13}, new short[]{14, 15}, null};
+        ShortPrimitive2DArrayTestClass testClass = new ShortPrimitive2DArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_byte_array() {
         byte[] a = new byte[] {0x12, 0x13, 0x14, 0x15};
-        BytePrimitiveArrayTestClass testClass = new BytePrimitiveArrayTestClass();
-        testClass.setA(a);
+        byte[] b = new byte[] {0x12, 0x13, 0x14, 0x15};
+        BytePrimitiveArrayTestClass testClass = new BytePrimitiveArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_byte_2d_array() {
-        byte[][] a = new byte[][] { new byte[]{0x12, 0x13}, new byte[]{0x14, 0x15}};
-        BytePrimitive2DArrayTestClass testClass = new BytePrimitive2DArrayTestClass();
-        testClass.setA(a);
+        byte[][] a = new byte[][] { new byte[]{0x12, 0x13}, null, new byte[]{0x14, 0x15}};
+        byte[][] b = new byte[][] { new byte[]{0x12, 0x13}, new byte[]{0x14, 0x15}, null};
+        BytePrimitive2DArrayTestClass testClass = new BytePrimitive2DArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_boolean_array() {
         boolean[] a = new boolean[] {false, true, false, true};
-        BooleanPrimitiveArrayTestClass testClass = new BooleanPrimitiveArrayTestClass();
-        testClass.setA(a);
+        boolean[] b = new boolean[] {false, true, false, true};
+        BooleanPrimitiveArrayTestClass testClass = new BooleanPrimitiveArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_primitive_boolean_2d_array() {
         boolean[][] a = new boolean[][] { new boolean[]{false, true}, new boolean[]{false, true}};
-        BooleanPrimitive2DArrayTestClass testClass = new BooleanPrimitive2DArrayTestClass();
-        testClass.setA(a);
+        boolean[][] b = new boolean[][] { new boolean[]{false, true}, new boolean[]{false, true}};
+        BooleanPrimitive2DArrayTestClass testClass = new BooleanPrimitive2DArrayTestClass(a, b);
 
+        testSerializationFor(testClass);
+
+        testClass.setA(null);
+        testClass.setB(null);
         testSerializationFor(testClass);
     }
 
     @Test
     public void test_string_array() {
         String[] a = new String[] {"Ämir", "Daniel"};
-        StringArrayTestClass testClass = new StringArrayTestClass();
-        testClass.setA(a);
+        String[] b = new String[] {"Ämir", "Daniel"};
+        StringArrayTestClass testClass = new StringArrayTestClass(a, b);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }
@@ -415,12 +477,13 @@ public class BlixtserTest {
     @Test
     public void test_string_2d_array() {
         String[][] a = new String[][] { new String[]{"Ämir", "Moulavi", null}, null, new String[]{"Daniel", "Frisk"}};
-        String2DArrayTestClass testClass = new String2DArrayTestClass();
-        testClass.setA(a);
+        String[][] b = new String[][] { new String[]{"Ämir", "Moulavi", null}, null, new String[]{"Daniel", "Frisk"}};
+        String2DArrayTestClass testClass = new String2DArrayTestClass(a, b);
 
         testSerializationFor(testClass);
 
         testClass.setA(null);
+        testClass.setB(null);
 
         testSerializationFor(testClass);
     }

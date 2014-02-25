@@ -74,14 +74,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class LongPrimitiveArrayTestClass {
-        private long[] a;
+        long[] a;
+        volatile long[] b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class LongPrimitive2DArrayTestClass {
-        private long[][] a;
+        long[][] a;
+        volatile long[][] b;
     }
 
     /**
@@ -106,14 +110,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class DoublePrimitiveArrayTestClass {
-        private double[] a;
+        double[] a;
+        volatile double[] b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class DoublePrimitive2DArrayTestClass {
-        private double[][] a;
+        double[][] a;
+        volatile double[][] b;
     }
 
     /**
@@ -138,14 +146,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class FloatPrimitiveArrayTestClass {
-        private float[] a;
+        float[] a;
+        volatile float[] b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class FloatPrimitive2DArrayTestClass {
-        private float[][] a;
+        float[][] a;
+        volatile float[][] b;
     }
 
     /**
@@ -170,14 +182,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class CharPrimitiveArrayTestClass {
-        private char[] a;
+        char[] a;
+        volatile char[] b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class CharPrimitive2DArrayTestClass {
-        private char[][] a;
+        char[][] a;
+        volatile char[][] b;
     }
 
     /**
@@ -202,14 +218,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class ShortPrimitiveArrayTestClass {
-        private short[] a;
+        short[] a;
+        volatile short[] b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class ShortPrimitive2DArrayTestClass {
-        private short[][] a;
+        short[][] a;
+        volatile short[][] b;
     }
 
     /**
@@ -234,14 +254,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class BytePrimitiveArrayTestClass {
-        private byte[] a;
+        byte[] a;
+        volatile byte[] b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class BytePrimitive2DArrayTestClass {
-        private byte[][] a;
+        byte[][] a;
+        volatile byte[][] b;
     }
 
     /**
@@ -266,14 +290,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class BooleanPrimitiveArrayTestClass {
-        private boolean[] a;
+        boolean[] a;
+        volatile boolean[] b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class BooleanPrimitive2DArrayTestClass {
-        private boolean[][] a;
+        boolean[][] a;
+        volatile boolean[][] b;
     }
 
     /**
@@ -337,14 +365,18 @@ public class TestClasses {
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class StringArrayTestClass {
-        private String[] a;
+        String[] a;
+        volatile String[] b;
     }
 
     @Data
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class String2DArrayTestClass {
-        private String[][] a;
+        String[][] a;
+        volatile String[][] b;
     }
 
     /**
