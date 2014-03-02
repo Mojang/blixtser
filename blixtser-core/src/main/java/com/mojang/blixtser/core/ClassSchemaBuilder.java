@@ -35,33 +35,53 @@ class ClassSchemaBuilder {
         registerClass(c, ignoreFields, false);
     }
 
+    ClassInfo createClassInfo(Class<?> c) {
+        return createClassInfo(c, Collections.<String>emptySet(), false);
+    }
+
     void registerClass(Class<?> c, Set<String> ignoreFields, boolean withTransient) {
         ClassInfo classInfo = classInfoCache.get(c);
         if (classInfo == null) {
+            valiadateClass(c);
             classInfo = createClassInfo(c, ignoreFields, withTransient);
             int code = c.hashCode();
             classInfoCache.put(code, classInfo);
         }
     }
 
-    ClassInfo createClassInfo(Class<?> c) {
-        return createClassInfo(c, Collections.<String>emptySet(), false);
-    }
-
     ClassInfo createClassInfo(Class<?> c, Set<String> fieldNamesToIgnore, boolean withTransient) {
         ClassInfo classInfo = classInfoCache.get(c);
         if (classInfo == null) {
+            valiadateClass(c);
             List<Field> fields = getFieldsFor(c, fieldNamesToIgnore, withTransient);
-            FieldInfo[] fieldInfos = new FieldInfo[fields.size()];
-            for (int i = 0; i < fields.size(); i++) {
-                Field field = fields.get(i);
-                fieldInfos[i] = createFieldInfo(field);
-            }
+            List<FieldInfo> fieldsWithInfo = mapFieldsToFieldInfo(fields);
+            FieldInfo[] fieldInfos = fieldsWithInfo.toArray(new FieldInfo[fieldsWithInfo.size()]);
             sortFieldOnOffset(fieldInfos);
             fieldInfos = mergeNonVolatilePrimitiveFields(fieldInfos);
             classInfo = new ClassInfo(c, fieldInfos);
         }
         return classInfo;
+    }
+
+    private void valiadateClass(Class<?> c) {
+        if (Modifier.isAbstract(c.getModifiers()) || Modifier.isInterface(c.getModifiers())) {
+            throw new RuntimeException("Can not register an abstract class");
+        }
+
+        if (Modifier.isInterface(c.getModifiers())) {
+            throw new RuntimeException("Can not register an interface class");
+        }
+    }
+
+    private List<FieldInfo> mapFieldsToFieldInfo(List<Field> fields) {
+        List<FieldInfo> fieldsWithInfo = new ArrayList<>(fields.size());
+        for (Field field : fields) {
+            FieldInfo fi = createFieldInfo(field);
+            if (fi != null) {
+                fieldsWithInfo.add(fi);
+            }
+        }
+        return fieldsWithInfo;
     }
 
     private FieldInfo createFieldInfo(Field field) {
@@ -79,7 +99,8 @@ class ClassSchemaBuilder {
         } else if (field.getType().getSuperclass() == Enum.class) {
             return new EnumFieldInfo(field, nonVolatileTypeRepository.getSerializer(Enum.class));
         } else {
-            throw new UnknownRegisteredTypeException(field.getName(), field.getType().getName());
+            System.out.println("Unsupported declared field " + field.getName() + "[" + field.getType().getName() + "] in Class " + field.getDeclaringClass().getName() + ", skipping...");
+            return null;
         }
     }
 
@@ -89,7 +110,8 @@ class ClassSchemaBuilder {
         } else if (field.getType().getSuperclass() == Enum.class) {
             return new EnumVolatileFieldInfo(field, volatileTypeRepository.getSerializer(Enum.class));
         } else {
-            throw new UnknownRegisteredTypeException(field.getName(), field.getType().getName());
+            System.out.println("Unsupported declared field " + field.getName() + "[" + field.getType().getName() + "] in Class " + field.getDeclaringClass().getName() + ", skipping...");
+            return null;
         }
     }
 

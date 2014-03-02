@@ -3,6 +3,8 @@ package com.mojang.blixtser.core;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
 public class ClassSchemaBuilderTest {
 
     private ClassSchemaBuilder classSchemaBuilder = new ClassSchemaBuilder();
@@ -31,6 +33,41 @@ public class ClassSchemaBuilderTest {
         Assert.assertEquals(4, classInfo.fieldInfos.length);
     }
 
+    @Test
+    public void unknown_fields() {
+        ClassSchemaBuilder.ClassInfo classInfo = classSchemaBuilder.createClassInfo(ClassWithUnknownFieldTypes.class);
+        Assert.assertEquals(2, classInfo.fieldInfos.length);
+    }
+
+    @Test
+    public void abstract_class_test() {
+        try {
+            classSchemaBuilder.createClassInfo(AbstractClass.class);
+            Assert.fail();
+        } catch (RuntimeException e) {}
+    }
+
+    @Test
+    public void interface_class_test() {
+        try {
+            classSchemaBuilder.createClassInfo(InterfaceClass.class);
+            Assert.fail();
+        } catch (RuntimeException e) {}
+    }
+
+    /**
+     *
+     */
+    private static interface InterfaceClass {
+
+    }
+
+    /**
+     *
+     */
+    private static abstract class AbstractClass {
+        private int a;
+    }
 
     /**
      *
@@ -88,4 +125,13 @@ public class ClassSchemaBuilderTest {
         private Short e2;
     }
 
+    /**
+     *
+     */
+    private class ClassWithUnknownFieldTypes {
+        private List<String> collections;
+        private volatile List<String> volatileCollections;
+        private int size;
+        private String name;
+    }
 }
