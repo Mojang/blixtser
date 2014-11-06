@@ -1,8 +1,9 @@
 package com.mojang.blixtser.benchmark;
 
-import de.ruedigermoeller.serialization.FSTConfiguration;
-import de.ruedigermoeller.serialization.FSTObjectInput;
-import de.ruedigermoeller.serialization.FSTObjectOutput;
+
+import org.nustaq.serialization.FSTConfiguration;
+import org.nustaq.serialization.FSTObjectInput;
+import org.nustaq.serialization.FSTObjectOutput;
 
 import java.io.IOException;
 
@@ -11,21 +12,22 @@ public class FastSerializer implements Serializer {
     final FSTObjectOutput out;
     final FSTObjectInput in;
 
+    byte[] buffer = new byte[4096];
+
     {
         FSTConfiguration fst = FSTConfiguration.createDefaultConfiguration();
         fst.setShareReferences(false);
-        fst.setIgnoreSerialInterfaces(true);
         fst.setPreferSpeed(true);
         fst.registerClass(SampleValue.class);
-        out = fst.getObjectOutput(null);
-        in = fst.getObjectInput(new byte[0], 0, 0);
+        out = fst.getObjectOutput(buffer);
+        in = fst.getObjectInput(buffer);
     }
 
     @Override
     public byte[] serialize(Object obj) {
         try {
             synchronized (out) {
-                out.resetForReUse(null);
+                out.resetForReUse(buffer);
                 out.writeObject(obj);
                 return out.getBuffer();
             }
@@ -38,7 +40,7 @@ public class FastSerializer implements Serializer {
     public Object deserialize(byte[] arr) {
         try {
             synchronized (in) {
-                in.resetForReuseUseArray(arr, 0, arr.length);
+                in.resetForReuseUseArray(arr);
                 return in.readObject();
             }
         } catch (IOException | ClassNotFoundException e) {

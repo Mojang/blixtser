@@ -55,38 +55,38 @@ A sample micro-benchmark on a OSx 10.10 (3 GHz Intel Core i7, L2 Cache 256 KB, L
 
 ```
 Benchmark                    Mode   Samples  Score   Error  Units
-------------------------------------------------------------------------------
-blixtser                     thrpt       10  8,074 ? 0,623  ops/s
-fastSerializer               thrpt       10  6,920 ? 0,460  ops/s
-java_built_in_serializer     thrpt       10  0,286 ? 0,036  ops/s
-kryo                         thrpt       10  0,618 ? 0,030  ops/s
+-----------------------------------------------------------------
+blixtser                     thrpt       10  8,214 ? 0,647  ops/s
+fastSerializer               thrpt       10  4,465 ? 0,175  ops/s
+java_built_in_serializer     thrpt       10  0,294 ? 0,008  ops/s
+kryo                         thrpt       10  4,382 ? 0,249  ops/s
 ```
 
 ```
 Benchmark                    Mode   Samples  Score   Error  Units
-------------------------------------------------------------------------------
-blixtser                      avgt       10  0,124 ? 0,015   s/op
-fastSerializer                avgt       10  0,158 ? 0,011   s/op
-java_built_in_serializer      avgt       10  3,427 ? 0,234   s/op
-kryo                          avgt       10  1,619 ? 0,127   s/op
+-----------------------------------------------------------------
+blixtser                      avgt       10  0,123 ? 0,011   s/op
+fastSerializer                avgt       10  0,217 ? 0,010   s/op
+java_built_in_serializer      avgt       10  3,245 ? 0,110   s/op
+kryo                          avgt       10  0,222 ? 0,013   s/op
 ```
 
 ```
 Benchmark                    Mode   Samples  Score   Error  Units
-------------------------------------------------------------------------------
-blixtser                    sample       92  0,127 ? 0,006   s/op
-fastSerializer              sample       76  0,158 ? 0,008   s/op
-java_built_in_serializer    sample       10  3,286 ? 0,207   s/op
-kryo                        sample       10  1,596 ? 0,066   s/op
+-----------------------------------------------------------------
+blixtser                    sample       94  0,125 ? 0,006   s/op
+fastSerializer              sample       57  0,220 ? 0,005   s/op
+java_built_in_serializer    sample       10  3,284 ? 0,066   s/op
+kryo                        sample       55  0,226 ? 0,008   s/op
 ```
 
 ```
 Benchmark                    Mode   Samples  Score   Error  Units
-------------------------------------------------------------------------------
-blixtser                        ss       10  0,119 ? 0,006      s
-fastSerializer                  ss       10  0,152 ? 0,004      s
-java_built_in_serializer        ss       10  3,261 ? 0,106      s
-kryo                            ss       10  1,591 ? 0,101      s
+-----------------------------------------------------------------
+blixtser                        ss       10  0,129 ? 0,010      s
+fastSerializer                  ss       10  0,212 ? 0,008      s
+java_built_in_serializer        ss       10  3,254 ? 0,087      s
+kryo                            ss       10  0,233 ? 0,016      s
 ```
 
 ### How to run the benchmarks

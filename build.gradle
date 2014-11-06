@@ -41,9 +41,7 @@ allprojects {
     }
 
     repositories {
-        maven {
-            url 'http://repo.dev.mojang:80/content/groups/public/'
-        }
+        mavenCentral()
     }
 
 }
