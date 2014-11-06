@@ -88,3 +88,7 @@ fastSerializer                 ss        10      139.314       34.530       ms
 kryo                           ss        10     1598.865       34.958       ms
 java_built_in_serializer       ss        10     4377.815      361.201       ms
 ```
+
+## License
+
+Distributed under the [MIT License](https://github.com/Mojang/blixtser/blob/master/LICENSE.md)
