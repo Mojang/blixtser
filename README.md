@@ -51,42 +51,50 @@ We have micro-benchmarked Blixtser against [Kryo](https://github.com/EsotericSof
 [fast-serialization](https://code.google.com/p/fast-serialization/) and Java built-in serializer using
 [JMH](http://openjdk.java.net/projects/code-tools/jmh/) library.
 
-A sample micro-benchmark on a OSx 10.9.1 (3 GHz Intel Core i7, L2 Cache 256 KB, L3 Cache 4 MB):
+A sample micro-benchmark on a OSx 10.10 (3 GHz Intel Core i7, L2 Cache 256 KB, L3 Cache 4 MB):
 
 ```
-Benchmark                    Mode   Samples         Mean   Mean error    Units
+Benchmark                    Mode   Samples  Score   Error  Units
 ------------------------------------------------------------------------------
-blixtser                    thrpt        10        0.008        0.001   ops/ms
-fastSerializer              thrpt        10        0.006        0.001   ops/ms
-kryo                        thrpt        10        0.001        0.000   ops/ms
-java_built_in_serializer    thrpt        10        0.000        0.000   ops/ms
-```
-
-```
-Benchmark                    Mode   Samples         Mean   Mean error    Units
-------------------------------------------------------------------------------
-blixtser                     avgt        10      140.400       26.830    ms/op
-fastSerializer               avgt        10      168.821       40.259    ms/op
-kryo                         avgt        10     1861.074       51.842    ms/op
-java_built_in_serializer     avgt        10     5059.678     1479.748    ms/op
+blixtser                     thrpt       10  8,074 ? 0,623  ops/s
+fastSerializer               thrpt       10  6,920 ? 0,460  ops/s
+java_built_in_serializer     thrpt       10  0,286 ? 0,036  ops/s
+kryo                         thrpt       10  0,618 ? 0,030  ops/s
 ```
 
 ```
-Benchmark                    Mode   Samples         Mean   Mean error    Units
+Benchmark                    Mode   Samples  Score   Error  Units
 ------------------------------------------------------------------------------
-blixtser                   sample        80      134.373        2.383    ms/op
-fastSerializer             sample        68      160.818        3.978    ms/op
-kryo                       sample        10     1663.461      324.640    ms/op
-java_built_in_serializer   sample        10     4985.350      295.715    ms/op
+blixtser                      avgt       10  0,124 ? 0,015   s/op
+fastSerializer                avgt       10  0,158 ? 0,011   s/op
+java_built_in_serializer      avgt       10  3,427 ? 0,234   s/op
+kryo                          avgt       10  1,619 ? 0,127   s/op
 ```
 
 ```
-Benchmark                    Mode   Samples         Mean   Mean error    Units
+Benchmark                    Mode   Samples  Score   Error  Units
 ------------------------------------------------------------------------------
-blixtser                       ss        10      109.216        5.472       ms
-fastSerializer                 ss        10      139.314       34.530       ms
-kryo                           ss        10     1598.865       34.958       ms
-java_built_in_serializer       ss        10     4377.815      361.201       ms
+blixtser                    sample       92  0,127 ? 0,006   s/op
+fastSerializer              sample       76  0,158 ? 0,008   s/op
+java_built_in_serializer    sample       10  3,286 ? 0,207   s/op
+kryo                        sample       10  1,596 ? 0,066   s/op
+```
+
+```
+Benchmark                    Mode   Samples  Score   Error  Units
+------------------------------------------------------------------------------
+blixtser                        ss       10  0,119 ? 0,006      s
+fastSerializer                  ss       10  0,152 ? 0,004      s
+java_built_in_serializer        ss       10  3,261 ? 0,106      s
+kryo                            ss       10  1,591 ? 0,101      s
+```
+
+### How to run the benchmarks
+
+Simply cd to `blixtser-benchmark` and run the following:
+
+```bash
+$ gradle -PmainClass=com.mojang.blixtser.benchmark.MicroBenchmark_AllModes execute
 ```
 
 ## License

@@ -26,7 +26,7 @@ public class MicroBenchmark_AverageTime {
         input = inputList.toArray(new SampleValue[inputList.size()]);
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void kryo() {
         for (SampleValue anInput : input) {
             byte[] serialized = kryoSerializer.serialize(anInput);
@@ -34,7 +34,7 @@ public class MicroBenchmark_AverageTime {
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void fastSerializer() {
         for (SampleValue anInput : input) {
             byte[] serialized = fastSerializer.serialize(anInput);
@@ -42,7 +42,7 @@ public class MicroBenchmark_AverageTime {
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void blixtser() {
         for (SampleValue anInput : input) {
             byte[] serialized = blixtserSerializer.serialize(anInput);
@@ -50,7 +50,7 @@ public class MicroBenchmark_AverageTime {
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void java_built_in_serializer() {
         for (SampleValue anInput : input) {
             byte[] serialized = javaBuiltInSerializer.serialize(anInput);

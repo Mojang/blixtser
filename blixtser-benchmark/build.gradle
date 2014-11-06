@@ -1,12 +1,14 @@
 dependencies {
     compile project(':blixtser-core')
 
-    compile 'org.openjdk.jmh:jmh-core:0.2.1'
+    compile 'org.openjdk.jmh:jmh-core:1.1.1'
+    compile 'org.openjdk.jmh:jmh-generator-annprocess:1.1.1'
+
     compile 'com.googlecode:kryo:1.04'
     compile 'de.ruedigermoeller:fst:1.28'
 }
 
-task runO(dependsOn: classes, type: JavaExec) {
-    main = 'com.mojang.blixtser.benchmark.MicroBenchmark_SampleTime';
-    classpath = sourceSets.main.runtimeClasspath;
+task execute(type:JavaExec) {
+    main = mainClass
+    classpath = sourceSets.main.runtimeClasspath
 }
