@@ -94,7 +94,7 @@ kryo                            ss       10  0,233 ? 0,016      s
 Simply cd to `blixtser-benchmark` and run the following:
 
 ```bash
-$ gradle -PmainClass=com.mojang.blixtser.benchmark.MicroBenchmark_AllModes execute
+$ gradle -PbenchmarkName=com.mojang.blixtser.benchmark.MicroBenchmark_AllModes benchmark
 ```
 
 ## License
