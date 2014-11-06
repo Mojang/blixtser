@@ -26,11 +26,9 @@ public class FastSerializer implements Serializer {
     @Override
     public byte[] serialize(Object obj) {
         try {
-            synchronized (out) {
-                out.resetForReUse(buffer);
-                out.writeObject(obj);
-                return out.getBuffer();
-            }
+            out.resetForReUse(buffer);
+            out.writeObject(obj);
+            return out.getBuffer();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,10 +37,8 @@ public class FastSerializer implements Serializer {
     @Override
     public Object deserialize(byte[] arr) {
         try {
-            synchronized (in) {
-                in.resetForReuseUseArray(arr);
-                return in.readObject();
-            }
+            in.resetForReuseUseArray(arr);
+            return in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
